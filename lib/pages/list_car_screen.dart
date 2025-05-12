@@ -9,6 +9,8 @@ import 'package:uuid/uuid.dart';
 import 'detail.dart';
 import 'car_listing_success_screen.dart';
 import 'package:cross_file/cross_file.dart';
+import 'listing_page.dart';
+import 'past_rentals_screen.dart';
 
 class ListCarScreen extends StatefulWidget {
   const ListCarScreen({Key? key}) : super(key: key);
@@ -569,6 +571,7 @@ class _ListCarScreenState extends State<ListCarScreen> {
             ),
 
             // Bottom Navigation - Updated with onTap handlers
+            // Bottom Navigation
             Container(
               padding: const EdgeInsets.symmetric(vertical: 8),
               decoration: BoxDecoration(
@@ -581,7 +584,16 @@ class _ListCarScreenState extends State<ListCarScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   GestureDetector(
-                    onTap: () => _handleNavigation(0),
+                    onTap: () {
+                      // Navigate to Home
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const ListingPage(),
+                        ),
+                        (route) => false,
+                      );
+                    },
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: const [
@@ -594,7 +606,9 @@ class _ListCarScreenState extends State<ListCarScreen> {
                     ),
                   ),
                   GestureDetector(
-                    onTap: () => _handleNavigation(1),
+                    onTap: () {
+                      // Already on List Car screen, do nothing
+                    },
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -614,7 +628,15 @@ class _ListCarScreenState extends State<ListCarScreen> {
                     ),
                   ),
                   GestureDetector(
-                    onTap: () => _handleNavigation(2),
+                    onTap: () {
+                      // Navigate to Past Rentals
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const PastRentalsScreen(),
+                        ),
+                      );
+                    },
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: const [

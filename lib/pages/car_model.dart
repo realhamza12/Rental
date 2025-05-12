@@ -53,7 +53,7 @@ class Car {
       days: data['days'] ?? 1,
       ownerInitials: data['ownerInitials'] ?? '',
       ownerName: data['ownerName'] ?? 'Unknown Owner',
-      images: List<String>.from(data['images'] ?? []),
+      images: ['assets/images/car3.jpg', 'assets/images/for.jpg'],
       rules: List<Map<String, dynamic>>.from(data['rules'] ?? []),
       transmission: data['transmission'] ?? 'Automatic',
     );

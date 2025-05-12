@@ -1,27 +1,25 @@
-// Create a new file called navigation_helper.dart
+// Fixed navigation_helper.dart
 
 import 'package:flutter/material.dart';
 import 'detail.dart'; // Contains CarDetailScreen
 import 'list_car_screen.dart';
 import 'past_rentals_screen.dart';
-import 'listing_page.dart'; // Add this import at the top
-import 'package:rental_app/pages/past_rentals_screen.dart';
+import 'listing_page.dart';
 
 class NavigationHelper {
-  // Navigate to home (Car Detail Screen)
+  // Navigate to home (Listing Page)
   static void navigateToHome(BuildContext context) {
+    // Use pushAndRemoveUntil to clear the navigation stack
     Navigator.pushAndRemoveUntil(
       context,
-      MaterialPageRoute(
-        builder: (context) => const ExplorePage(), //
-      ),
+      MaterialPageRoute(builder: (context) => const ListingPage()),
       (route) => false,
     );
   }
 
   // Navigate to List Car Screen
   static void navigateToListCar(BuildContext context) {
-    // Check if we're already on the ListCarScreen
+    // Check current route to avoid duplicate screens
     bool isCurrentRouteListCar = false;
     Navigator.popUntil(context, (route) {
       if (route.settings.name == 'ListCarScreen') {
@@ -54,7 +52,7 @@ class NavigationHelper {
 
   // Navigate to Past Rentals Screen
   static void navigateToPastRentals(BuildContext context) {
-    // Check if we're already on the PastRentalsScreen
+    // Check current route to avoid duplicate screens
     bool isCurrentRoutePastRentals = false;
     Navigator.popUntil(context, (route) {
       if (route.settings.name == 'PastRentalsScreen') {
@@ -74,7 +72,8 @@ class NavigationHelper {
       context,
       MaterialPageRoute(
         builder: (context) => const PastRentalsScreen(),
-      ), // ✅ correct
+        settings: const RouteSettings(name: 'PastRentalsScreen'),
+      ),
     );
   }
 

@@ -1,4 +1,5 @@
 // Updated listing_page.dart with improved Firestore fetching
+import 'sidebar.dart';
 
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
