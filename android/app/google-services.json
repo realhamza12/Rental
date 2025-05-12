@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "318038145457",
+    "project_id": "rental-app-flutterfirebase",
+    "storage_bucket": "rental-app-flutterfirebase.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:318038145457:android:876cc7e7a11e9808802590",
+        "android_client_info": {
+          "package_name": "com.example.rental_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAcwfj2atmakpjuA4tGPyMjITngYVKsqTY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
