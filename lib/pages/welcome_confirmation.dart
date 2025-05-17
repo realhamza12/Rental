@@ -6,8 +6,7 @@ import 'listing_page.dart';
 class WelcomeConfirmationPage extends StatelessWidget {
   final String firstName;
 
-  const WelcomeConfirmationPage({Key? key, required this.firstName})
-      : super(key: key);
+  const WelcomeConfirmationPage({super.key, required this.firstName});
 
   @override
   Widget build(BuildContext context) {
@@ -33,11 +32,7 @@ class WelcomeConfirmationPage extends StatelessWidget {
                 color: const Color(0xFFCCFF00),
                 shape: BoxShape.circle,
               ),
-              child: const Icon(
-                Icons.check,
-                color: Colors.black,
-                size: 80,
-              ),
+              child: const Icon(Icons.check, color: Colors.black, size: 80),
             ),
 
             const SizedBox(height: 40),
@@ -70,21 +65,31 @@ class WelcomeConfirmationPage extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 40),
               child: Text(
                 "Your account has been created successfully. You'll be redirected to the home page in a moment.",
-                style: TextStyle(
-                  color: Colors.grey,
-                  fontSize: 16,
-                ),
+                style: TextStyle(color: Colors.grey, fontSize: 16),
                 textAlign: TextAlign.center,
               ),
             ),
 
             const SizedBox(height: 40),
+            // Spinning wheel animation
+            TweenAnimationBuilder(
+              tween: Tween<double>(begin: 0, end: 1),
+              duration: const Duration(seconds: 1),
+              curve: Curves.linear,
+              builder: (context, value, child) {
+                return Transform.rotate(
+                  angle: value * 6.28, // 2 * pi
+                  child: child,
+                );
+              },
+              child: Image.asset(
+                'assets/images/wheel.jpg',
+                height: 60,
+                width: 60,
+              ),
+            ),
 
             // Loading indicator
-            CircularProgressIndicator(
-              valueColor:
-                  AlwaysStoppedAnimation<Color>(const Color(0xFFCCFF00)),
-            ),
           ],
         ),
       ),

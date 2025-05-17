@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
-import 'list_car_screen.dart';
-import 'car_model.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
 import 'navigation_helper.dart';
+import 'sidebar.dart';
+
+GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
 class PastRentalsScreen extends StatefulWidget {
-  const PastRentalsScreen({Key? key}) : super(key: key);
+  const PastRentalsScreen({super.key});
 
   @override
   State<PastRentalsScreen> createState() => _PastRentalsScreenState();
@@ -16,15 +19,18 @@ class _PastRentalsScreenState extends State<PastRentalsScreen> {
   bool _isLoading = true;
   List<Map<String, dynamic>> _pastRentals = [];
   String? _errorMessage;
-
-  // In a real app, you would get this from authentication
-  // For now, we'll use a hardcoded user ID
-  final String _userId = 'current_user_id';
+  bool _disposed = false;
 
   @override
   void initState() {
     super.initState();
     _fetchPastRentals();
+  }
+
+  @override
+  void dispose() {
+    _disposed = true;
+    super.dispose();
   }
 
   // Navigation handling
@@ -33,6 +39,8 @@ class _PastRentalsScreenState extends State<PastRentalsScreen> {
   }
 
   Future<void> _fetchPastRentals() async {
+    if (_disposed) return;
+
     try {
       setState(() {
         _isLoading = true;
@@ -41,21 +49,27 @@ class _PastRentalsScreenState extends State<PastRentalsScreen> {
 
       print('📱 Fetching past rentals from Firestore...');
 
-      // Get bookings collection from Firestore
-      // Assuming you have a 'bookings' collection where each document represents a booking
+      // Get current user ID
+      final user = FirebaseAuth.instance.currentUser;
+      if (user == null) {
+        throw Exception('User not logged in');
+      }
+
+      final String userId = user.uid;
+      print('📱 Current user ID: $userId');
+
+      // Get bookings collection from Firestore - simplified query to avoid index issues
       final QuerySnapshot snapshot =
           await FirebaseFirestore.instance
               .collection('bookings')
-              // Filter by user ID in a real app
-              // .where('userId', isEqualTo: _userId)
-              // Order by booking date, most recent first
-              .orderBy('bookingDate', descending: true)
+              .where('bookedBy', isEqualTo: userId)
               .get();
 
-      print('📱 Fetched ${snapshot.docs.length} bookings from Firestore');
+      print('📱 Found ${snapshot.docs.length} bookings');
+
+      if (_disposed) return;
 
       if (snapshot.docs.isEmpty) {
-        print('📱 No bookings found in Firestore');
         setState(() {
           _pastRentals = [];
           _isLoading = false;
@@ -70,59 +84,86 @@ class _PastRentalsScreenState extends State<PastRentalsScreen> {
         try {
           final data = doc.data() as Map<String, dynamic>;
 
+          // Skip if this isn't a completed booking
+          if (data['carId'] == null) {
+            continue;
+          }
+
           // Get car details for this booking
           DocumentSnapshot? carDoc;
-          if (data['carId'] != null) {
+          try {
             carDoc =
                 await FirebaseFirestore.instance
                     .collection('cars')
                     .doc(data['carId'])
                     .get();
+
+            if (!carDoc.exists) {
+              print('📱 Car document not found for ID: ${data['carId']}');
+              continue; // Skip this booking if car doesn't exist
+            }
+          } catch (e) {
+            print('📱 Error fetching car document: $e');
+            continue; // Skip this booking if there's an error fetching the car
+          }
+
+          if (_disposed) return;
+
+          // Get car data
+          final carData = carDoc.data() as Map<String, dynamic>;
+          final carImages = carData['images'] as List<dynamic>? ?? [];
+
+          // Get dates from car document's availableFrom and availableTo fields
+          DateTime startDate = DateTime.now();
+          DateTime endDate = DateTime.now().add(Duration(days: 3));
+
+          try {
+            if (carData['availableFrom'] != null &&
+                carData['availableFrom'] is Timestamp) {
+              startDate = (carData['availableFrom'] as Timestamp).toDate();
+              print('📱 Found availableFrom date: $startDate');
+            }
+
+            if (carData['availableTo'] != null &&
+                carData['availableTo'] is Timestamp) {
+              endDate = (carData['availableTo'] as Timestamp).toDate();
+              print('📱 Found availableTo date: $endDate');
+            }
+          } catch (e) {
+            print('📱 Error parsing dates: $e');
+            // Use default dates if there's an error
           }
 
           // Create rental object with combined booking and car data
           final Map<String, dynamic> rental = {
             'id': doc.id,
-            'carId': data['carId'] ?? '',
-            'carName':
-                carDoc != null && carDoc.exists
-                    ? (carDoc.data() as Map<String, dynamic>)['name'] ??
-                        'Unknown Car'
-                    : data['carName'] ?? 'Unknown Car',
+            'carId': data['carId'],
+            'carName': data['carName'] ?? carData['name'] ?? 'Unknown Car',
             'location':
-                carDoc != null && carDoc.exists
-                    ? (carDoc.data() as Map<String, dynamic>)['location'] ??
-                        'Unknown Location'
-                    : data['location'] ?? 'Unknown Location',
-            'startDate':
-                data['startDate'] != null
-                    ? (data['startDate'] as Timestamp).toDate()
-                    : DateTime.now(),
-            'endDate':
-                data['endDate'] != null
-                    ? (data['endDate'] as Timestamp).toDate()
-                    : DateTime.now().add(const Duration(days: 1)),
+                carData['location'] ?? data['location'] ?? 'Unknown Location',
+            'startDate': startDate,
+            'endDate': endDate,
             'rating': data['rating'] ?? 0,
-            'totalAmount': data['totalAmount'] ?? 0,
+            'totalAmount':
+                (data['price'] ?? carData['price'] ?? 0) *
+                (data['days'] ?? carData['days'] ?? 1),
             'imageUrl':
-                carDoc != null &&
-                        carDoc.exists &&
-                        (carDoc.data() as Map<String, dynamic>)['images'] !=
-                            null &&
-                        ((carDoc.data() as Map<String, dynamic>)['images']
-                                as List)
-                            .isNotEmpty
-                    ? (carDoc.data() as Map<String, dynamic>)['images'][0]
+                carImages.isNotEmpty
+                    ? carImages[0]
                     : 'https://images.unsplash.com/photo-1503736334956-4c8f8e92946d',
             'isRated': data['isRated'] ?? false,
           };
 
           rentals.add(rental);
-          print('📱 Added rental: ${rental['carName']}');
+          print(
+            '📱 Added rental: ${rental['carName']} from ${DateFormat('dd MMM').format(rental['startDate'])} to ${DateFormat('dd MMM').format(rental['endDate'])}',
+          );
         } catch (e) {
           print('📱 Error parsing rental document: $e');
         }
       }
+
+      if (_disposed) return;
 
       setState(() {
         _pastRentals = rentals;
@@ -132,15 +173,19 @@ class _PastRentalsScreenState extends State<PastRentalsScreen> {
       print('📱 Updated state with ${rentals.length} rentals');
     } catch (e) {
       print('📱 Error fetching rentals: $e');
-      setState(() {
-        _isLoading = false;
-        _errorMessage = 'Error loading past rentals: $e';
-      });
+      if (!_disposed) {
+        setState(() {
+          _isLoading = false;
+          _errorMessage = 'Error loading past rentals: $e';
+        });
+      }
     }
   }
 
   // Update rating in Firestore
   Future<void> _updateRating(String rentalId, int newRating) async {
+    if (_disposed) return;
+
     try {
       // Update the rating in Firestore
       await FirebaseFirestore.instance
@@ -149,44 +194,51 @@ class _PastRentalsScreenState extends State<PastRentalsScreen> {
           .update({'rating': newRating, 'isRated': true});
 
       // Update local state
-      setState(() {
-        for (int i = 0; i < _pastRentals.length; i++) {
-          if (_pastRentals[i]['id'] == rentalId) {
-            _pastRentals[i]['rating'] = newRating;
-            _pastRentals[i]['isRated'] = true;
-            break;
+      if (!_disposed) {
+        setState(() {
+          for (int i = 0; i < _pastRentals.length; i++) {
+            if (_pastRentals[i]['id'] == rentalId) {
+              _pastRentals[i]['rating'] = newRating;
+              _pastRentals[i]['isRated'] = true;
+              break;
+            }
           }
-        }
-      });
+        });
+      }
 
       // Show a success message
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Rating updated to $newRating stars'),
-          backgroundColor: Theme.of(context).primaryColor,
-          duration: const Duration(seconds: 2),
-        ),
-      );
+      if (!_disposed) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Rating updated to $newRating stars'),
+            backgroundColor: Theme.of(context).primaryColor,
+            duration: const Duration(seconds: 2),
+          ),
+        );
+      }
     } catch (e) {
       print('📱 Error updating rating: $e');
       // Show an error message
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Error updating rating: $e'),
-          backgroundColor: Colors.red,
-          duration: const Duration(seconds: 2),
-        ),
-      );
+      if (!_disposed) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error updating rating: $e'),
+            backgroundColor: Colors.red,
+            duration: const Duration(seconds: 2),
+          ),
+        );
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
+      drawer: SideBar(onClose: () => _scaffoldKey.currentState?.closeDrawer()),
       body: SafeArea(
         child: Column(
           children: [
-            // Header
             Padding(
               padding: const EdgeInsets.symmetric(
                 horizontal: 16.0,
@@ -195,20 +247,23 @@ class _PastRentalsScreenState extends State<PastRentalsScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Container(
-                    padding: const EdgeInsets.all(8.0),
-                    decoration: BoxDecoration(
-                      color: Colors.grey[800],
-                      borderRadius: BorderRadius.circular(8.0),
+                  GestureDetector(
+                    onTap: () => _scaffoldKey.currentState?.openDrawer(),
+                    child: Container(
+                      padding: const EdgeInsets.all(8.0),
+                      decoration: BoxDecoration(
+                        color: Colors.grey[800],
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      child: const Icon(Icons.menu, size: 20),
                     ),
-                    child: const Icon(Icons.grid_view, size: 20),
                   ),
                   const Text(
                     'Rental',
                     style: TextStyle(
+                      fontFamily: 'Conthrax',
                       color: Color(0xFFCCFF00),
-                      fontFamily: 'BeVietnamPro',
-                      fontSize: 24,
+                      fontSize: 21,
                     ),
                   ),
                   const CircleAvatar(
@@ -237,7 +292,7 @@ class _PastRentalsScreenState extends State<PastRentalsScreen> {
               child: const Text(
                 'Past Rentals',
                 style: TextStyle(
-                  fontSize: 18,
+                  fontSize: 16,
                   color: Color(0xFFCCFF00),
                   fontFamily: 'BeVietnamPro',
                 ),
@@ -250,10 +305,35 @@ class _PastRentalsScreenState extends State<PastRentalsScreen> {
               child:
                   _isLoading
                       ? Center(
-                        child: CircularProgressIndicator(
-                          valueColor: AlwaysStoppedAnimation<Color>(
-                            Theme.of(context).primaryColor,
-                          ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            TweenAnimationBuilder(
+                              tween: Tween<double>(begin: 0, end: 1),
+                              duration: const Duration(seconds: 1),
+                              curve: Curves.linear,
+                              builder: (context, value, child) {
+                                return Transform.rotate(
+                                  angle: value * 6.28, // 2 * pi
+                                  child: child,
+                                );
+                              },
+                              child: Image.asset(
+                                'assets/images/wheel.jpg',
+                                width: 80,
+                                height: 80,
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+                            const Text(
+                              'Fetching your Past Rentals',
+                              style: TextStyle(
+                                fontFamily: 'BeVietnamPro',
+                                color: Colors.white,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ],
                         ),
                       )
                       : _errorMessage != null
@@ -267,10 +347,15 @@ class _PastRentalsScreenState extends State<PastRentalsScreen> {
                               size: 48,
                             ),
                             const SizedBox(height: 16),
-                            Text(
-                              _errorMessage!,
-                              style: const TextStyle(color: Colors.red),
-                              textAlign: TextAlign.center,
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 24.0,
+                              ),
+                              child: Text(
+                                _errorMessage!,
+                                style: const TextStyle(color: Colors.red),
+                                textAlign: TextAlign.center,
+                              ),
                             ),
                             const SizedBox(height: 16),
                             ElevatedButton(

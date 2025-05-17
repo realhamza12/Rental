@@ -1,7 +1,7 @@
 // Fixed navigation_helper.dart
 
 import 'package:flutter/material.dart';
-import 'detail.dart'; // Contains CarDetailScreen
+// Contains CarDetailScreen
 import 'list_car_screen.dart';
 import 'past_rentals_screen.dart';
 import 'listing_page.dart';

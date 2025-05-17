@@ -4,11 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'log-in-page.dart';
 import 'past_rentals_screen.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:rental_app/pages/notifications_screen.dart';
+
+final userId = FirebaseAuth.instance.currentUser?.uid;
 
 class SideBar extends StatelessWidget {
   final Function onClose;
 
-  const SideBar({Key? key, required this.onClose}) : super(key: key);
+  const SideBar({super.key, required this.onClose});
 
   Future<void> _logout(BuildContext context) async {
     try {
@@ -40,7 +44,7 @@ class SideBar extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(16.0),
               decoration: BoxDecoration(
-                color: Colors.grey[900],
+                color: const Color.fromARGB(255, 0, 0, 0),
                 border: Border(
                   bottom: BorderSide(color: Colors.grey[800]!, width: 1),
                 ),
@@ -55,19 +59,55 @@ class SideBar extends StatelessWidget {
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: const [
-                        Text(
-                          'John Doe',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Text(
-                          'john.doe@example.com',
-                          style: TextStyle(color: Colors.grey, fontSize: 12),
-                          overflow: TextOverflow.ellipsis,
+                      children: [
+                        FutureBuilder<DocumentSnapshot>(
+                          future:
+                              FirebaseFirestore.instance
+                                  .collection('users')
+                                  .doc(FirebaseAuth.instance.currentUser?.uid)
+                                  .get(),
+                          builder: (context, snapshot) {
+                            if (!snapshot.hasData) {
+                              return const Text(
+                                'Loading...',
+                                style: TextStyle(
+                                  color: Color.fromARGB(255, 183, 183, 183),
+                                ),
+                              );
+                            }
+
+                            final userData =
+                                snapshot.data!.data() as Map<String, dynamic>?;
+
+                            if (userData == null) {
+                              return const Text(
+                                'No data',
+                                style: TextStyle(color: Colors.white),
+                              );
+                            }
+
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  userData['first_name'] ?? 'No Name',
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Text(
+                                  userData['email'] ?? '',
+                                  style: const TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: 12,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ],
+                            );
+                          },
                         ),
                       ],
                     ),
@@ -94,6 +134,66 @@ class SideBar extends StatelessWidget {
                       // Already on home page
                     },
                   ),
+
+                  StreamBuilder<QuerySnapshot>(
+                    stream:
+                        FirebaseFirestore.instance
+                            .collection('users')
+                            .doc(FirebaseAuth.instance.currentUser?.uid)
+                            .collection('notifications')
+                            .where('seen', isEqualTo: false)
+                            .snapshots(),
+                    builder: (context, snapshot) {
+                      final hasUnseen =
+                          snapshot.hasData && snapshot.data!.docs.isNotEmpty;
+
+                      return Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          onTap: () {
+                            Navigator.of(context).pop(); // Close sidebar
+                            WidgetsBinding.instance.addPostFrameCallback((_) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder:
+                                      (context) => const NotificationsScreen(),
+                                ),
+                              );
+                            });
+                          },
+
+                          child: ListTile(
+                            leading: Stack(
+                              children: [
+                                const Icon(
+                                  Icons.notifications,
+                                  color: Colors.white,
+                                ),
+                                if (hasUnseen)
+                                  Positioned(
+                                    right: 0,
+                                    top: 0,
+                                    child: Container(
+                                      width: 8,
+                                      height: 8,
+                                      decoration: const BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: Colors.red,
+                                      ),
+                                    ),
+                                  ),
+                              ],
+                            ),
+                            title: const Text(
+                              'Notifications',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
                   _buildMenuItem(
                     context,
                     icon: Icons.directions_car,
@@ -117,15 +217,7 @@ class SideBar extends StatelessWidget {
                       );
                     },
                   ),
-                  _buildMenuItem(
-                    context,
-                    icon: Icons.settings,
-                    title: 'Settings',
-                    onTap: () {
-                      onClose();
-                      // Navigate to Settings page
-                    },
-                  ),
+
                   const Divider(color: Colors.grey),
                   _buildMenuItem(
                     context,
@@ -147,11 +239,6 @@ class SideBar extends StatelessWidget {
                 border: Border(
                   top: BorderSide(color: Colors.grey[800]!, width: 1),
                 ),
-              ),
-              child: const Text(
-                'App Version 1.0.0',
-                style: TextStyle(color: Colors.grey, fontSize: 12),
-                textAlign: TextAlign.center,
               ),
             ),
           ],

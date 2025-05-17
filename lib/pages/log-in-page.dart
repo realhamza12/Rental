@@ -1,12 +1,18 @@
-// Update log-in-page.dart
+// Updated log-in-page.dart with BLoC pattern
 
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'sign-in-page.dart';
 import 'listing_page.dart';
-import 'auth_service.dart';
+import 'auth_bloc.dart';
+import 'auth_event.dart';
+import 'auth_state.dart';
+
+bool _obscurePassword = true;
 
 class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
+
   @override
   _LoginPageState createState() => _LoginPageState();
 }
@@ -14,109 +20,134 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
-  final AuthService _authService = AuthService();
-  bool _isLoading = false;
-  String? _errorMessage;
-
-  Future<void> login() async {
-    setState(() {
-      _isLoading = true;
-      _errorMessage = null;
-    });
-
-    try {
-      await _authService.signInWithEmailAndPassword(
-        email: emailController.text.trim(),
-        password: passwordController.text.trim(),
-      );
-
-      // Navigate to listing page
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const ListingPage()),
-      );
-    } catch (e) {
-      setState(() {
-        _errorMessage = e.toString();
-      });
-    } finally {
-      setState(() {
-        _isLoading = false;
-      });
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFF181818),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24.0),
-        child: ListView(
-          children: [
-            SizedBox(height: 160),
-            Center(
-              child: Text(
-                'Rental',
-                style: TextStyle(
-                  color: Colors.limeAccent,
-                  fontSize: 32,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-            SizedBox(height: 305),
-            Text('LogIn', style: TextStyle(color: Colors.white, fontSize: 18)),
-            SizedBox(height: 20),
-            buildTextField(emailController, 'Email'),
-            buildTextField(passwordController, 'Password', isPassword: true),
+    return BlocProvider(
+      create: (context) => AuthBloc(),
+      child: BlocConsumer<AuthBloc, AuthState>(
+        listener: (context, state) {
+          if (state is Authenticated) {
+            // Navigate to listing page
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const ListingPage()),
+            );
+          } else if (state is AuthError) {
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(state.message)));
+          }
+        },
+        builder: (context, state) {
+          return Scaffold(
+            backgroundColor: const Color(0xFF181818),
+            body: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24.0),
+              child: ListView(
+                children: [
+                  SizedBox(height: 160),
+                  Center(
+                    child: Text(
+                      'Rental',
 
-            // Error message
-            if (_errorMessage != null)
-              Padding(
-                padding: const EdgeInsets.only(top: 16.0),
-                child: Text(
-                  _errorMessage!,
-                  style: TextStyle(color: Colors.red, fontSize: 14),
-                ),
-              ),
-
-            SizedBox(height: 30),
-
-            // Login button
-            _isLoading
-                ? Center(child: CircularProgressIndicator())
-                : ElevatedButton(
-                  onPressed: login,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    foregroundColor: Colors.black,
-                    padding: EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(40),
+                      style: TextStyle(
+                        fontFamily: 'Conthrax',
+                        color: Color(0xFFCCFF00),
+                        fontSize: 32,
+                      ),
                     ),
                   ),
-                  child: Text('Login', style: TextStyle(fontSize: 16)),
-                ),
 
-            SizedBox(height: 8),
-            TextButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => SignUpPage()),
-                );
-              },
-              child: Text(
-                "Don't have an account?",
-                style: TextStyle(
-                  color: Colors.white70,
-                  decoration: TextDecoration.underline,
-                ),
+                  SizedBox(height: 305),
+                  Text(
+                    'Log In',
+                    style: TextStyle(color: Colors.white, fontSize: 22),
+                  ),
+                  SizedBox(height: 20),
+                  buildTextField(emailController, 'Email'),
+                  buildTextField(
+                    passwordController,
+                    'Password',
+                    isPassword: true,
+                  ),
+
+                  SizedBox(height: 30),
+
+                  // Login button
+                  state is AuthLoading
+                      ? Center(child: CircularProgressIndicator())
+                      : ElevatedButton(
+                        onPressed: () {
+                          final email = emailController.text.trim();
+                          final password = passwordController.text.trim();
+
+                          if (email.isEmpty || password.isEmpty) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Please fill in all fields'),
+                              ),
+                            );
+                            return;
+                          }
+
+                          if (!email.contains('@')) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Enter a valid email'),
+                              ),
+                            );
+                            return;
+                          }
+
+                          if (password.length < 6) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                  'Password must be at least 6 characters',
+                                ),
+                              ),
+                            );
+                            return;
+                          }
+
+                          // Continue with login if valid
+                          BlocProvider.of<AuthBloc>(context).add(
+                            SignInRequested(email: email, password: password),
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          foregroundColor: Colors.black,
+                          padding: EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(40),
+                          ),
+                        ),
+                        child: Text('Login', style: TextStyle(fontSize: 16)),
+                      ),
+
+                  SizedBox(height: 8),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => SignUpPage()),
+                      );
+                    },
+                    child: Text(
+                      "Don't have an account?",
+                      style: TextStyle(
+                        color: const Color.fromARGB(255, 242, 241, 241),
+                        decoration: TextDecoration.underline,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
@@ -130,19 +161,33 @@ class _LoginPageState extends State<LoginPage> {
       padding: const EdgeInsets.symmetric(vertical: 10),
       child: TextField(
         controller: controller,
-        obscureText: isPassword,
-        style: TextStyle(color: Colors.white),
+        obscureText: isPassword ? _obscurePassword : false,
+        style: const TextStyle(color: Colors.white),
         decoration: InputDecoration(
           labelText: label,
-          labelStyle: TextStyle(color: Colors.white70),
-          enabledBorder: UnderlineInputBorder(
+          labelStyle: const TextStyle(color: Colors.white70),
+          enabledBorder: const UnderlineInputBorder(
             borderSide: BorderSide(color: Colors.white24),
           ),
-          focusedBorder: UnderlineInputBorder(
+          focusedBorder: const UnderlineInputBorder(
             borderSide: BorderSide(color: Colors.limeAccent),
           ),
           suffixIcon:
-              isPassword ? Icon(Icons.visibility, color: Colors.white70) : null,
+              isPassword
+                  ? IconButton(
+                    icon: Icon(
+                      _obscurePassword
+                          ? Icons.visibility
+                          : Icons.visibility_off,
+                      color: Colors.white70,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _obscurePassword = !_obscurePassword;
+                      });
+                    },
+                  )
+                  : null,
         ),
       ),
     );

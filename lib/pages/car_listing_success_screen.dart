@@ -2,9 +2,10 @@
 
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'navigation_helper.dart';
 
 class CarListingSuccessScreen extends StatefulWidget {
-  const CarListingSuccessScreen({Key? key}) : super(key: key);
+  const CarListingSuccessScreen({super.key});
 
   @override
   State<CarListingSuccessScreen> createState() =>
@@ -57,8 +58,7 @@ class _CarListingSuccessScreenState extends State<CarListingSuccessScreen>
   }
 
   void _navigateToHome() {
-    // Navigate back to the home page
-    Navigator.of(context).popUntil((route) => route.isFirst);
+    NavigationHelper.navigateToHome(context);
   }
 
   @override
@@ -88,9 +88,9 @@ class _CarListingSuccessScreenState extends State<CarListingSuccessScreen>
                   const Text(
                     'Rental',
                     style: TextStyle(
+                      fontFamily: 'Conthrax',
                       color: Color(0xFFCCFF00),
-                      fontFamily: 'BeVietnamPro',
-                      fontSize: 24,
+                      fontSize: 21,
                     ),
                   ),
                   const CircleAvatar(
@@ -202,15 +202,11 @@ class _CarListingSuccessScreenState extends State<CarListingSuccessScreen>
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: const [
-                      Icon(Icons.home, color: Colors.grey, size: 24),
-                      Text(
-                        'home',
-                        style: TextStyle(color: Colors.grey, fontSize: 12),
-                      ),
-                    ],
+                  GestureDetector(
+                    onTap:
+                        () =>
+                            NavigationHelper.handleBottomNavigation(context, 0),
+                    child: Column(children: [Icon(Icons.home), Text('home')]),
                   ),
                   Column(
                     mainAxisSize: MainAxisSize.min,

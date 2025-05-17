@@ -17,9 +17,7 @@ class OnboardingScreen extends StatelessWidget {
             width: double.infinity,
             decoration: const BoxDecoration(
               color: Color(0xFFE7FE54),
-              borderRadius: BorderRadius.vertical(
-                bottom: Radius.circular(40),
-              ),
+              borderRadius: BorderRadius.vertical(bottom: Radius.circular(40)),
             ),
             child: Stack(
               clipBehavior: Clip.none, // Allows overflow
@@ -45,7 +43,7 @@ class OnboardingScreen extends StatelessWidget {
             child: Text(
               "Find The best car for your best ride!",
               textAlign: TextAlign.left,
-              
+
               style: TextStyle(
                 fontSize: 46,
                 color: Colors.white,
@@ -64,10 +62,7 @@ class OnboardingScreen extends StatelessWidget {
             child: Text(
               "Luxury cars, own drivers and instant delivery of cars anywhere in the world.",
               textAlign: TextAlign.left,
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.grey,
-              ),
+              style: TextStyle(fontSize: 14, color: Colors.grey),
             ),
           ),
 
@@ -89,8 +84,8 @@ class OnboardingScreen extends StatelessWidget {
                 ),
                 onPressed: () {
                   Navigator.push(
-                   context,
-                   MaterialPageRoute(builder: (context) => SignUpPage()),
+                    context,
+                    MaterialPageRoute(builder: (context) => SignUpPage()),
                   );
                 },
                 child: const Text(
@@ -106,7 +101,7 @@ class OnboardingScreen extends StatelessWidget {
           // Already have an account text
           TextButton(
             onPressed: () {
-               Navigator.push(
+              Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => LoginPage()),
               );

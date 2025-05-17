@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'car_model.dart'; // Import the Car model
-import 'past_rentals_screen.dart'; // Import the Past Rentals screen
-import 'list_car_screen.dart'; // Import the List Car screen
+
 import 'navigation_helper.dart';
 
 class BookingConfirmationScreen extends StatelessWidget {
   final Car car;
 
-  const BookingConfirmationScreen({Key? key, required this.car})
-    : super(key: key);
+  const BookingConfirmationScreen({super.key, required this.car});
 
   void _handleNavigation(BuildContext context, int index) {
     NavigationHelper.handleBottomNavigation(context, index);
@@ -16,6 +14,8 @@ class BookingConfirmationScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print("🏗️ Building BookingConfirmationScreen for car: ${car.name}");
+
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -90,6 +90,7 @@ class BookingConfirmationScreen extends StatelessWidget {
                                   );
                                 },
                                 errorBuilder: (context, error, stackTrace) {
+                                  print("❌ Error loading image: $error");
                                   return Container(
                                     height: 250,
                                     width: double.infinity,

@@ -2,7 +2,6 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -22,8 +21,7 @@ class AuthService {
     required String lastName,
   }) async {
     try {
-      // Create user with email and password
-      UserCredential userCredential = await _auth
+      final UserCredential userCredential = await _auth
           .createUserWithEmailAndPassword(email: email, password: password);
 
       // Save additional user info in Firestore
@@ -35,12 +33,21 @@ class AuthService {
       });
 
       return userCredential;
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'email-already-in-use') {
+        throw 'An account already exists for that email.';
+      } else if (e.code == 'weak-password') {
+        throw 'The password provided is too weak.';
+      } else if (e.code == 'invalid-email') {
+        throw 'Please enter a valid email address.';
+      } else {
+        throw 'Registration failed: ${e.message}';
+      }
     } catch (e) {
-      rethrow;
+      throw 'An unexpected error occurred.';
     }
   }
 
-  // Sign in with email and password
   Future<UserCredential> signInWithEmailAndPassword({
     required String email,
     required String password,
@@ -50,28 +57,16 @@ class AuthService {
         email: email,
         password: password,
       );
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        throw 'No user found for that email.';
+      } else if (e.code == 'wrong-password') {
+        throw 'Incorrect password.';
+      } else {
+        throw 'Login failed: ${e.message}';
+      }
     } catch (e) {
-      rethrow;
-    }
-  }
-
-  // Sign out
-  Future<void> signOut() async {
-    await _auth.signOut();
-  }
-
-  // Get user data from Firestore
-  Future<Map<String, dynamic>?> getUserData() async {
-    if (currentUser == null) return null;
-
-    try {
-      DocumentSnapshot doc =
-          await _firestore.collection('users').doc(currentUser!.uid).get();
-
-      return doc.exists ? doc.data() as Map<String, dynamic> : null;
-    } catch (e) {
-      print('Error getting user data: $e');
-      return null;
+      throw 'An unexpected error occurred.';
     }
   }
 }
