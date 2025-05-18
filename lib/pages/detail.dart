@@ -6,7 +6,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dots_indicator/dots_indicator.dart';
 import 'car_model.dart';
 import 'booking_confirmation_screen.dart';
-import 'package:rental_app/pages/date_formatter.dart';
+
 import 'navigation_helper.dart';
 import 'car_detail_bloc.dart';
 import 'car_detail_event.dart';
