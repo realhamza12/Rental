@@ -24,6 +24,7 @@ class Car {
   final bool isAvailable;
   final String? bookedBy;
   final String? bookingId;
+  final int kms;
 
   Car({
     required this.id,
@@ -45,6 +46,7 @@ class Car {
     this.isAvailable = true,
     this.bookedBy,
     this.bookingId,
+    required this.kms
   });
 
   factory Car.fromMap(Map<String, dynamic> data, DocumentSnapshot doc) {
@@ -80,8 +82,9 @@ class Car {
       isAvailable: data['isAvailable'] ?? true,
       bookedBy: data['bookedBy'],
       bookingId: data['bookingId'],
+      kms: data['kms'] ?? 0,
     );
   }
 
-  get kms => null;
+  
 }

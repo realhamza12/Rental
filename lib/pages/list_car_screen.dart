@@ -1,5 +1,3 @@
-// Updated list_car_screen.dart with BLoC pattern
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
@@ -17,7 +15,7 @@ String? selectedLocation;
 
 DateTime? _availableFrom;
 DateTime? _availableTo;
-String? _selectedKms;
+
 final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
 class ListCarScreen extends StatefulWidget {
@@ -45,16 +43,17 @@ class _ListCarScreenState extends State<ListCarScreen> {
   ]; // Common car seating options
   int _selectedKms = 1000;
   final List<int> _kmsoptions = [1000, 2000, 3000, 40000, 5000];
-  bool _isLoading = true; // Add this flag to control initial loading state
+  bool _isLoading = false; // Add this flag to control initial loading state
+  bool _isFormLoading = true; // for initial load
 
   @override
   void initState() {
     super.initState();
     // Simulate loading for 1.5 seconds to show the animation
     Future.delayed(const Duration(milliseconds: 1500), () {
-      if (mounted) {
+      {
         setState(() {
-          _isLoading = false;
+          _isFormLoading = false;
         });
       }
     });
@@ -159,7 +158,8 @@ class _ListCarScreenState extends State<ListCarScreen> {
                   // Main content
                   Expanded(
                     child:
-                        state is ListCarLoading ||
+                        _isFormLoading ||
+                                state is ListCarLoading ||
                                 _isLoading // Check both conditions
                             ? Center(
                               child: Column(

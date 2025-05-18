@@ -10,6 +10,7 @@ import 'sidebar.dart';
 import 'listing_bloc.dart';
 import 'listing_event.dart';
 import 'listing_state.dart';
+import 'package:rental_app/pages/date_formatter.dart';
 
 const List<String> karachiAreas = [
   'DHA',
@@ -106,7 +107,7 @@ class _ExplorePageState extends State<ExplorePage> {
                   // 📍 Location Filter
                   Expanded(
                     child: Container(
-                      height: 59,
+                      height: 49,
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(32),
@@ -164,7 +165,7 @@ class _ExplorePageState extends State<ExplorePage> {
                     ),
                   ),
 
-                  const SizedBox(width: 16),
+                  const SizedBox(width: 10),
 
                   // 📅 Date Range Filter
                   Expanded(
@@ -204,7 +205,7 @@ class _ExplorePageState extends State<ExplorePage> {
                         }
                       },
                       child: SizedBox(
-                        height: 59,
+                        height: 49,
                         width: 200,
                         child: Container(
                           padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -220,7 +221,7 @@ class _ExplorePageState extends State<ExplorePage> {
                                 color: Color.fromARGB(255, 255, 255, 255),
                                 size: 18,
                               ),
-                              const SizedBox(width: 8),
+                              const SizedBox(width: 16),
                               Expanded(
                                 child: Text(
                                   selectedDateRange == null
@@ -245,7 +246,7 @@ class _ExplorePageState extends State<ExplorePage> {
             ),
             const SizedBox(height: 1),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -262,8 +263,8 @@ class _ExplorePageState extends State<ExplorePage> {
                     child: const Text(
                       'Reset Filters',
                       style: TextStyle(
-                        color: Color(0xFFE7FE54),
-                        fontWeight: FontWeight.bold,
+                        color: Color.fromARGB(69, 255, 255, 255),
+                        fontWeight: FontWeight.w200,
                       ),
                     ),
                   ),
@@ -288,9 +289,10 @@ class _ExplorePageState extends State<ExplorePage> {
                           );
                         },
                         child: Image.asset(
-                          'assets/images/wheel.jpg',
+                          'assets/images/wheel.png',
                           width: 80,
                           height: 80,
+                          opacity: AlwaysStoppedAnimation(0.5),
                         ),
                       ),
                     );
@@ -581,30 +583,66 @@ class CarCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Car Name
-                  Text(
-                    car.name,
-                    style: const TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        car.name,
+                        style: const TextStyle(
+                          fontSize: 28,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          const Icon(
+                            Icons.star,
+                            color: Color(0xFFCCFF00),
+                            size: 18,
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            car.rating.toStringAsFixed(1),
+                            style: const TextStyle(fontSize: 14),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                   Text(
                     car.type,
                     style: const TextStyle(
-                      fontSize: 18,
+                      fontSize: 16,
                       fontWeight: FontWeight.bold,
+                      color: Color.fromARGB(132, 255, 255, 255),
                     ),
                   ),
 
                   const SizedBox(height: 12),
 
                   // Price
-                  Text(
-                    '\$${car.price.toInt()}/day',
-                    style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  Row(
+                    children: [
+                      Text(
+                        '\$${car.price.toInt()}',
+                        style: const TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Column(
+                        children: [
+                          SizedBox(height: 4.5,),
+                          Text(
+                            '/day',
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w200,
+                            ),
+                          ),
+                        ],
+                      )
+                    ],
                   ),
 
                   const SizedBox(height: 12),
@@ -612,35 +650,41 @@ class CarCard extends StatelessWidget {
                   // Rating and Location
                   Row(
                     children: [
-                      const Icon(
-                        Icons.star,
-                        color: Color(0xFFCCFF00),
-                        size: 18,
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        car.rating.toStringAsFixed(1),
-                        style: const TextStyle(fontSize: 14),
-                      ),
-                      const SizedBox(width: 16),
+                    
                       const Icon(
                         Icons.location_on,
                         color: Colors.grey,
                         size: 18,
                       ),
                       const SizedBox(width: 4),
-                      Expanded(
-                        child: Text(
-                          car.location,
-                          style: const TextStyle(
-                            fontSize: 14,
-                            color: Colors.grey,
-                          ),
-                          overflow: TextOverflow.ellipsis,
+                      Text(
+                        car.location,
+                        style: const TextStyle(
+                          fontSize: 14,
+                          color: Colors.grey,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(width: 16),
+                      const Icon(
+                        Icons.date_range,
+                        color: Colors.grey,
+                        size: 18,
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        DateFormatter.formatDateRange(
+                          car.availableFrom,
+                          car.availableTo,
+                        ),
+                        style: const TextStyle(
+                          fontSize: 14,
+                          color: Colors.grey,
                         ),
                       ),
                     ],
                   ),
+                  
 
                   const SizedBox(height: 8),
 

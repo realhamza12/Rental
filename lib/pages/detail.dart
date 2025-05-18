@@ -67,7 +67,7 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
                 Text(
                   'Confirm Booking',
                   style: TextStyle(
-                    fontSize: 24,
+                    fontSize: 32,
                     fontWeight: FontWeight.bold,
                     color: Theme.of(context).primaryColor,
                   ),
@@ -76,13 +76,13 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
                 Text(
                   'Are you sure you want to book the ${car.name} ${car.type}?',
                   textAlign: TextAlign.center,
-                  style: const TextStyle(fontSize: 18),
+                  style: const TextStyle(fontSize: 14),
                 ),
                 const SizedBox(height: 10),
                 Text(
                   'Total: \$${(car.price * car.days).toInt()} for ${car.days} days',
                   style: const TextStyle(
-                    fontSize: 16,
+                    fontSize: 22,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -475,87 +475,107 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
                                   Text(
                                     car.name,
                                     style: const TextStyle(
-                                      fontSize: 28,
+                                      fontSize: 36,
                                       fontWeight: FontWeight.bold,
+                                      color: Colors.white
                                     ),
                                   ),
                                   Text(
                                     car.type,
                                     style: const TextStyle(
-                                      fontSize: 28,
+                                      fontSize: 18,
                                       fontWeight: FontWeight.bold,
+                                      color: Color.fromARGB(131, 255, 255, 255)
                                     ),
                                   ),
 
                                   const SizedBox(height: 16),
 
                                   // Price
-                                  Text(
-                                    '\$${car.price.toInt()}/day',
-                                    style: const TextStyle(
-                                      fontSize: 28,
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                                  Row(
+                                    children: [
+                                      Text(
+                                        '\$${car.price.toInt()}',
+                                        style: const TextStyle(
+                                          fontSize: 28,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white
+                                        ),
+                                      ),
+                                      Column(
+                                        children: [
+                                          SizedBox(height: 9,),
+                                          Text('/day',
+                                          style: const TextStyle(
+                                            fontSize: 20,
+                                            color: Color.fromARGB(131, 255, 255, 255)
+                                          ),),
+                                        ],
+                                      )
+                                    ],
                                   ),
 
                                   const SizedBox(height: 12),
 
                                   // Rating and Location
-                                  Row(
-                                    children: [
-                                      const Icon(
-                                        Icons.star,
-                                        color: Color(0xFFCCFF00),
-                                        size: 20,
-                                      ),
-                                      const SizedBox(width: 4),
-                                      Text(
-                                        car.rating.toStringAsFixed(1),
-                                        style: const TextStyle(fontSize: 16),
-                                      ),
-                                      const SizedBox(width: 16),
-                                      const Icon(
-                                        Icons.location_on,
-                                        color: Colors.grey,
-                                        size: 20,
-                                      ),
-                                      const SizedBox(width: 4),
-                                      Text(
-                                        car.location,
-                                        style: const TextStyle(
-                                          fontSize: 16,
-                                          color: Colors.grey,
+                                  SingleChildScrollView(
+                                    scrollDirection: Axis.horizontal,
+                                    child: Row(
+                                      children: [
+                                        const Icon(
+                                          Icons.star,
+                                          color: Color(0xFFCCFF00),
+                                          size: 20,
                                         ),
-                                      ),
-                                      const SizedBox(width: 16),
-                                      const Icon(
-                                        Icons.event_seat,
-                                        color: Colors.grey,
-                                        size: 20,
-                                      ),
-                                      const SizedBox(width: 4),
-                                      Text(
-                                        '${car.seater} seats',
-                                        style: const TextStyle(
-                                          fontSize: 16,
-                                          color: Colors.grey,
+                                        const SizedBox(width: 4),
+                                        Text(
+                                          car.rating.toStringAsFixed(1),
+                                          style: const TextStyle(fontSize: 16),
                                         ),
-                                      ),
-                                      const SizedBox(width: 16),
-                                      const Icon(
-                                        Icons.access_time,
-                                        color: Colors.grey,
-                                        size: 20,
-                                      ),
-                                      const SizedBox(width: 4),
-                                      Text(
-                                        '${car.days} days',
-                                        style: const TextStyle(
-                                          fontSize: 16,
+                                        const SizedBox(width: 16),
+                                        const Icon(
+                                          Icons.location_on,
                                           color: Colors.grey,
+                                          size: 20,
                                         ),
-                                      ),
-                                    ],
+                                        const SizedBox(width: 4),
+                                        Text(
+                                          car.location,
+                                          style: const TextStyle(
+                                            fontSize: 16,
+                                            color: Colors.grey,
+                                          ),
+                                        ),
+                                        const SizedBox(width: 16),
+                                        const Icon(
+                                          Icons.event_seat,
+                                          color: Colors.grey,
+                                          size: 20,
+                                        ),
+                                        const SizedBox(width: 4),
+                                        Text(
+                                          '${car.seater} seats',
+                                          style: const TextStyle(
+                                            fontSize: 16,
+                                            color: Colors.grey,
+                                          ),
+                                        ),
+                                        const SizedBox(width: 16),
+                                        const Icon(
+                                          Icons.access_time,
+                                          color: Colors.grey,
+                                          size: 20,
+                                        ),
+                                        const SizedBox(width: 4),
+                                        Text(
+                                          '${car.days} days',
+                                          style: const TextStyle(
+                                            fontSize: 16,
+                                            color: Colors.grey,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
 
                                   const SizedBox(height: 16),
@@ -737,34 +757,38 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
                                   const SizedBox(height: 20),
 
                                   // Book Now Button
-                                  Center(
-                                    child: ElevatedButton(
-                                      onPressed: () {
-                                        // Show booking confirmation modal
-                                        _showBookingConfirmation(context, car);
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: Colors.white,
-                                        foregroundColor: Colors.black,
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 40,
-                                          vertical: 12,
-                                        ),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            30,
-                                          ),
-                                        ),
-                                      ),
-                                      child: const Text(
-                                        'Book Now',
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
+                                  
+                                     Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                       children: [
+                                         SizedBox(
+                                          width: 120,
+                                          height: 40,
+                                           child: FloatingActionButton.extended(
+                                            onPressed: () {
+                                              _showBookingConfirmation(context, car);
+                                            },
+                                            backgroundColor: Colors.white,
+                                            foregroundColor: Colors.black,
+                                             shape: RoundedRectangleBorder(
+                                             borderRadius: BorderRadius.circular(30), // 👈 Increase for more roundness
+                                            ),
+                                            label: const Text(
+                                              'Book Now',
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                                                               ),
+                                         ),
+                                         SizedBox(
+                                          width: 10,
+                                         )
+                                       ],
+                                       
+                                     ),
+                                  
                                 ],
                               ),
                             ),
