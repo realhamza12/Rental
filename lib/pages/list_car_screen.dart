@@ -230,20 +230,14 @@ class _ListCarScreenState extends State<ListCarScreen> {
                                       );
                                     },
                                     child: Image.asset(
-                                      'assets/images/wheel.jpg',
+                                      'assets/images/wheel.png',
+                                      opacity: AlwaysStoppedAnimation(0.5),
                                       width: 80,
                                       height: 80,
                                     ),
                                   ),
                                   const SizedBox(height: 16),
-                                  const Text(
-                                    "Preparing listing form",
-                                    style: TextStyle(
-                                      fontFamily: 'BeVietnamPro',
-                                      color: Colors.white,
-                                      fontSize: 16,
-                                    ),
-                                  ),
+                                  
                                 ],
                               ),
                             )
@@ -253,37 +247,34 @@ class _ListCarScreenState extends State<ListCarScreen> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
-                                    const SizedBox(height: 30),
+                                    const SizedBox(height: 10),
                                     // Title - Car image removed as requested
-                                    const Text(
-                                      'List your car today !',
-                                      style: TextStyle(
-                                        fontSize: 27,
-                                        fontFamily: 'Conthrax',
-                                        fontWeight: FontWeight.normal,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 30),
-                                    const Text(
-                                      'It takes ',
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                    const Text(
-                                      'less than 2',
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                        color: Color(0xFFCCFF00),
-                                        fontWeight: FontWeight.bold,
-                                      ),
+                                    
+                                   
+                                    Row( 
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        const Text(
+                                          'It takes ',
+                                          style: TextStyle(
+                                            fontSize: 22,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                        const Text(
+                                          'less than 2',
+                                          style: TextStyle(
+                                            fontSize: 22,
+                                            color: Color(0xFFCCFF00),
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                     const Text(
                                       'minutes to list your car !',
                                       style: TextStyle(
-                                        fontSize: 18,
+                                        fontSize: 22,
                                         color: Colors.white,
                                       ),
                                     ),
@@ -294,12 +285,12 @@ class _ListCarScreenState extends State<ListCarScreen> {
                                     const Text(
                                       'note : fields marked with * are mandatory',
                                       style: TextStyle(
-                                        fontSize: 12,
+                                        fontSize: 16,
                                         color: Colors.grey,
                                       ),
                                     ),
 
-                                    const SizedBox(height: 20),
+                                    const SizedBox(height: 26),
 
                                     // Form
                                     Form(
@@ -696,7 +687,7 @@ class _ListCarScreenState extends State<ListCarScreen> {
                                               color: Colors.white,
                                             ),
                                           ),
-                                          const SizedBox(height: 8),
+                                          const SizedBox(height: 16),
 
                                           Row(
                                             children: [
@@ -980,7 +971,7 @@ class _ListCarScreenState extends State<ListCarScreen> {
                   Container(
                     padding: const EdgeInsets.symmetric(vertical: 8),
                     decoration: BoxDecoration(
-                      color: Colors.black,
+                      
                       border: Border(
                         top: BorderSide(color: Colors.grey[900]!, width: 1),
                       ),

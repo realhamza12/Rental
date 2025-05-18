@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:rental_app/pages/profile_page.dart';
 import 'list_car_screen.dart';
 import 'past_rentals_screen.dart';
 import 'car_model.dart';
@@ -529,7 +530,7 @@ class _ExplorePageState extends State<ExplorePage> {
       // Navigate to Past Rentals screen
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => PastRentalsScreen()),
+        MaterialPageRoute(builder: (context) => ProfilePage()),
       );
     }
   }
@@ -662,7 +663,7 @@ class CarCard extends StatelessWidget {
                   Row(
                     children: [
                       Text(
-                        '\$${car.price.toInt()}',
+                        '\Rs. ${car.price.toInt()}',
                         style: const TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
@@ -670,7 +671,7 @@ class CarCard extends StatelessWidget {
                       ),
                       Column(
                         children: [
-                          SizedBox(height: 4.5),
+                          SizedBox(height: 4.5,),
                           Text(
                             '/day',
                             style: const TextStyle(
@@ -679,7 +680,7 @@ class CarCard extends StatelessWidget {
                             ),
                           ),
                         ],
-                      ),
+                      )
                     ],
                   ),
 
@@ -688,6 +689,7 @@ class CarCard extends StatelessWidget {
                   // Rating and Location
                   Row(
                     children: [
+                    
                       const Icon(
                         Icons.location_on,
                         color: Colors.grey,
@@ -703,30 +705,6 @@ class CarCard extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                       ),
                       const SizedBox(width: 16),
-                      const Icon(
-                        Icons.date_range,
-                        color: Colors.grey,
-                        size: 18,
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        DateFormatter.formatDateRange(
-                          car.availableFrom,
-                          car.availableTo,
-                        ),
-                        style: const TextStyle(
-                          fontSize: 14,
-                          color: Colors.grey,
-                        ),
-                      ),
-                    ],
-                  ),
-
-                  const SizedBox(height: 8),
-
-                  // Seater and Days
-                  Row(
-                    children: [
                       const Icon(
                         Icons.event_seat,
                         color: Colors.grey,
@@ -755,17 +733,17 @@ class CarCard extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(width: 16),
-                      const Icon(Icons.alt_route, color: Colors.grey, size: 18),
-                      const SizedBox(width: 4),
-                      Text(
-                        '${car.kms} Kms',
-                        style: const TextStyle(
-                          fontSize: 14,
-                          color: Colors.grey,
-                        ),
-                      ),
+                      
+                     
+                        
                     ],
                   ),
+                  
+
+                  const SizedBox(height: 8),
+
+                  // Seater and Days
+                  
 
                   const SizedBox(height: 12),
 

@@ -2,6 +2,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:rental_app/pages/booking_confirmation_screen.dart';
+import 'package:rental_app/pages/profile_page.dart';
+
 import 'firebase_options.dart';
 import 'pages/onboarding.dart';
 import 'pages/listing_page.dart';
@@ -44,7 +46,7 @@ class MyApp extends StatelessWidget {
           primary: Color(0xFFE7FE54),
         ),
       ),
-      home: const OnboardingScreen(),
+      home: const ListingPage(),
       onGenerateRoute: (settings) {
         if (settings.name == '/bookingConfirmation') {
           final car = settings.arguments as Car;
