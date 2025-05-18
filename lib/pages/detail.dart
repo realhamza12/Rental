@@ -1,4 +1,4 @@
-// Updated detail.dart to ensure isAvailable is set correctly
+// Updated detail.dart to display owner ratings
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -310,11 +310,55 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
                             fontSize: 21,
                           ),
                         ),
-                        const CircleAvatar(
-                          radius: 18,
-                          backgroundImage: AssetImage(
-                            'assets/images/profile.jpg',
-                          ),
+                        FutureBuilder<DocumentSnapshot>(
+                          future:
+                              FirebaseFirestore.instance
+                                  .collection('users')
+                                  .doc(FirebaseAuth.instance.currentUser?.uid)
+                                  .get(),
+                          builder: (context, snapshot) {
+                            if (!snapshot.hasData) {
+                              return const CircleAvatar(
+                                radius: 24,
+                                backgroundColor: Colors.grey,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: Colors.white,
+                                ),
+                              );
+                            }
+
+                            final userData =
+                                snapshot.data!.data() as Map<String, dynamic>?;
+                            if (userData == null) {
+                              return const CircleAvatar(
+                                radius: 24,
+                                backgroundColor: Colors.grey,
+                                child: Icon(Icons.person, color: Colors.white),
+                              );
+                            }
+
+                            final firstName =
+                                userData['first_name'] as String? ?? '';
+                            final lastName =
+                                userData['last_name'] as String? ?? '';
+                            final initials =
+                                (firstName.isNotEmpty ? firstName[0] : '') +
+                                (lastName.isNotEmpty ? lastName[0] : '');
+
+                            return CircleAvatar(
+                              radius: 24,
+                              backgroundColor: Colors.grey[700],
+                              child: Text(
+                                initials.toUpperCase(),
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            );
+                          },
                         ),
                       ],
                     ),
@@ -605,29 +649,157 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
 
                                   const SizedBox(height: 16),
 
-                                  // Owner Info
-                                  Row(
-                                    children: [
-                                      CircleAvatar(
-                                        radius: 20,
-                                        backgroundColor: Colors.grey[700],
-                                        child: Text(
-                                          car.ownerInitials,
-                                          style: const TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold,
+                                  // Owner Info with Rating
+                                  FutureBuilder<DocumentSnapshot>(
+                                    future:
+                                        FirebaseFirestore.instance
+                                            .collection('users')
+                                            .doc(car.ownerId)
+                                            .get(),
+                                    builder: (context, snapshot) {
+                                      // Default owner info
+                                      Widget ownerInfo = Row(
+                                        children: [
+                                          CircleAvatar(
+                                            radius: 24,
+                                            backgroundColor: Colors.grey[700],
+                                            child: Text(
+                                              car.ownerInitials.isNotEmpty
+                                                  ? car.ownerInitials
+                                                      .toUpperCase()
+                                                  : car.ownerName.isNotEmpty
+                                                  ? car.ownerName[0]
+                                                      .toUpperCase()
+                                                  : "?",
+                                              style: const TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 16,
+                                              ),
+                                            ),
                                           ),
-                                        ),
-                                      ),
-                                      const SizedBox(width: 12),
-                                      Text(
-                                        car.ownerName,
-                                        style: const TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                      ),
-                                    ],
+                                          const SizedBox(width: 12),
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                car.ownerName,
+                                                style: const TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w500,
+                                                ),
+                                              ),
+                                              Row(
+                                                children: [
+                                                  const Icon(
+                                                    Icons.star,
+                                                    color: Color(0xFFCCFF00),
+                                                    size: 16,
+                                                  ),
+                                                  const SizedBox(width: 4),
+                                                  Text(
+                                                    car.rating.toStringAsFixed(
+                                                      1,
+                                                    ),
+                                                    style: const TextStyle(
+                                                      fontSize: 14,
+                                                      color: Colors.grey,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      );
+
+                                      // If we have owner data from Firestore
+                                      if (snapshot.hasData &&
+                                          snapshot.data != null) {
+                                        final ownerData =
+                                            snapshot.data!.data()
+                                                as Map<String, dynamic>?;
+
+                                        if (ownerData != null) {
+                                          final firstName =
+                                              ownerData['first_name']
+                                                  as String? ??
+                                              '';
+                                          final lastName =
+                                              ownerData['last_name']
+                                                  as String? ??
+                                              '';
+                                          final initials =
+                                              (firstName.isNotEmpty
+                                                  ? firstName[0]
+                                                  : '') +
+                                              (lastName.isNotEmpty
+                                                  ? lastName[0]
+                                                  : '');
+                                          final ownerRating =
+                                              ownerData['average_rating'] ??
+                                              0.0;
+                                          final totalRatings =
+                                              ownerData['total_ratings'] ?? 0;
+
+                                          // Enhanced owner info with rating from Firestore
+                                          ownerInfo = Row(
+                                            children: [
+                                              CircleAvatar(
+                                                radius: 24,
+                                                backgroundColor:
+                                                    Colors.grey[700],
+                                                child: Text(
+                                                  initials.toUpperCase(),
+                                                  style: const TextStyle(
+                                                    color: Colors.white,
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 16,
+                                                  ),
+                                                ),
+                                              ),
+                                              const SizedBox(width: 12),
+                                              Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    "$firstName $lastName",
+                                                    style: const TextStyle(
+                                                      fontSize: 16,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                    ),
+                                                  ),
+                                                  Row(
+                                                    children: [
+                                                      const Icon(
+                                                        Icons.star,
+                                                        color: Color(
+                                                          0xFFCCFF00,
+                                                        ),
+                                                        size: 16,
+                                                      ),
+                                                      const SizedBox(width: 4),
+                                                      Text(
+                                                        "${(ownerRating as num).toDouble().toStringAsFixed(1)} (${totalRatings} ${totalRatings == 1 ? 'rating' : 'ratings'})",
+                                                        style: const TextStyle(
+                                                          fontSize: 14,
+                                                          color: Colors.grey,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          );
+                                        }
+                                      }
+
+                                      return ownerInfo;
+                                    },
                                   ),
 
                                   const SizedBox(height: 20),
@@ -766,6 +938,80 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
                                                   ),
                                                   Text(
                                                     'Renters must be at least 21 years old. Additional fees may apply for drivers under 25.',
+                                                    style: TextStyle(
+                                                      fontSize: 14,
+                                                      color: Colors.grey,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            const Text(
+                                              '3.',
+                                              style: TextStyle(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            const SizedBox(width: 8),
+                                            Expanded(
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: const [
+                                                  Text(
+                                                    'No Smoking Policy:',
+                                                    style: TextStyle(
+                                                      fontSize: 14,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    'Smoking inside the rental vehicle is strictly prohibited. Violation of this policy will result in a cleaning fee of up to RS. 2000.',
+                                                    style: TextStyle(
+                                                      fontSize: 14,
+                                                      color: Colors.grey,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            const Text(
+                                              '4.',
+                                              style: TextStyle(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            const SizedBox(width: 8),
+                                            Expanded(
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: const [
+                                                  Text(
+                                                    'Fuel Policy:',
+                                                    style: TextStyle(
+                                                      fontSize: 14,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    'The car must be returned with the same fuel level as at the time of pickup. Failure to do so will result in additional refueling charges.',
                                                     style: TextStyle(
                                                       fontSize: 14,
                                                       color: Colors.grey,

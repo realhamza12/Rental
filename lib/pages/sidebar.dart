@@ -6,6 +6,8 @@ import 'log-in-page.dart';
 import 'past_rentals_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rental_app/pages/notifications_screen.dart';
+import 'my_cars_screen.dart';
+import 'navigation_helper.dart';
 
 final userId = FirebaseAuth.instance.currentUser?.uid;
 
@@ -51,9 +53,53 @@ class SideBar extends StatelessWidget {
               ),
               child: Row(
                 children: [
-                  const CircleAvatar(
-                    radius: 24,
-                    backgroundImage: AssetImage('assets/images/profile.jpg'),
+                  FutureBuilder<DocumentSnapshot>(
+                    future:
+                        FirebaseFirestore.instance
+                            .collection('users')
+                            .doc(FirebaseAuth.instance.currentUser?.uid)
+                            .get(),
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData) {
+                        return const CircleAvatar(
+                          radius: 24,
+                          backgroundColor: Colors.grey,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Colors.white,
+                          ),
+                        );
+                      }
+
+                      final userData =
+                          snapshot.data!.data() as Map<String, dynamic>?;
+                      if (userData == null) {
+                        return const CircleAvatar(
+                          radius: 24,
+                          backgroundColor: Colors.grey,
+                          child: Icon(Icons.person, color: Colors.white),
+                        );
+                      }
+
+                      final firstName = userData['first_name'] as String? ?? '';
+                      final lastName = userData['last_name'] as String? ?? '';
+                      final initials =
+                          (firstName.isNotEmpty ? firstName[0] : '') +
+                          (lastName.isNotEmpty ? lastName[0] : '');
+
+                      return CircleAvatar(
+                        radius: 24,
+                        backgroundColor: Colors.grey[700],
+                        child: Text(
+                          initials.toUpperCase(),
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                      );
+                    },
                   ),
                   const SizedBox(width: 12),
                   Expanded(
@@ -139,7 +185,8 @@ class SideBar extends StatelessWidget {
                         iconColor: Color.fromARGB(206, 255, 255, 255),
                         onTap: () {
                           onClose();
-                          // Already on home page
+                          // Navigate to home page
+                          NavigationHelper.handleBottomNavigation(context, 0);
                         },
                       ),
                       SizedBox(height: 10),
@@ -219,6 +266,12 @@ class SideBar extends StatelessWidget {
                         onTap: () {
                           onClose();
                           // Navigate to My Cars page
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const MyCarsScreen(),
+                            ),
+                          );
                         },
                       ),
                       SizedBox(height: 10),

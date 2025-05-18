@@ -55,7 +55,7 @@ class ListCarBloc extends Bloc<ListCarEvent, ListCarState> {
           'transmission': event.transmission,
           'days': event.days, // placeholder
           'seater': event.seater,
-          'kms' :event.kms,
+          'kms': event.kms,
           'availableFrom': Timestamp.fromDate(event.availableFrom),
           'availableTo': Timestamp.fromDate(event.availableTo),
         };
@@ -76,7 +76,7 @@ class ListCarBloc extends Bloc<ListCarEvent, ListCarState> {
         await notificationRef.set({
           'type': 'listing',
           'message':
-              "Your car '${event.carName}' has been listed successfully!",
+              "Your car '${event.carName}' has been listed successfully! check my cars page for more info",
           'carId': carId,
           'seen': false,
           'timestamp': FieldValue.serverTimestamp(),

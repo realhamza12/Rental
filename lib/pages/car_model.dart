@@ -64,7 +64,7 @@ class Car {
               : (data['rating'] ?? 0.0),
       location: data['location'] ?? 'Unknown Location',
       days: data['days'] ?? 1,
-      seater: data['seater'] ?? 4, // Default to 4 seats if not specified
+      seater: data['seater'] ?? 5, // Default to 4 seats if not specified
       ownerInitials: data['ownerInitials'] ?? '',
       ownerName: data['ownerName'] ?? 'Unknown Owner',
       images: List<String>.from(data['images'] ?? []),

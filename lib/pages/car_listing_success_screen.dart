@@ -4,6 +4,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'navigation_helper.dart';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
 class CarListingSuccessScreen extends StatefulWidget {
   const CarListingSuccessScreen({super.key});
 
@@ -93,9 +96,53 @@ class _CarListingSuccessScreenState extends State<CarListingSuccessScreen>
                       fontSize: 21,
                     ),
                   ),
-                  const CircleAvatar(
-                    radius: 18,
-                    backgroundImage: AssetImage('assets/images/profile.jpg'),
+                  FutureBuilder<DocumentSnapshot>(
+                    future:
+                        FirebaseFirestore.instance
+                            .collection('users')
+                            .doc(FirebaseAuth.instance.currentUser?.uid)
+                            .get(),
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData) {
+                        return const CircleAvatar(
+                          radius: 18,
+                          backgroundColor: Colors.grey,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Colors.white,
+                          ),
+                        );
+                      }
+
+                      final userData =
+                          snapshot.data!.data() as Map<String, dynamic>?;
+                      if (userData == null) {
+                        return const CircleAvatar(
+                          radius: 18,
+                          backgroundColor: Colors.grey,
+                          child: Icon(Icons.person, color: Colors.white),
+                        );
+                      }
+
+                      final firstName = userData['first_name'] as String? ?? '';
+                      final lastName = userData['last_name'] as String? ?? '';
+                      final initials =
+                          (firstName.isNotEmpty ? firstName[0] : '') +
+                          (lastName.isNotEmpty ? lastName[0] : '');
+
+                      return CircleAvatar(
+                        radius: 18,
+                        backgroundColor: Colors.grey[700],
+                        child: Text(
+                          initials.toUpperCase(),
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                      );
+                    },
                   ),
                 ],
               ),

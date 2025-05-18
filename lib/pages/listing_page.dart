@@ -1,4 +1,4 @@
-// Updated listing_page.dart with BLoC pattern
+// Updated listing_page.dart to display owner ratings
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,6 +11,10 @@ import 'listing_bloc.dart';
 import 'listing_event.dart';
 import 'listing_state.dart';
 import 'package:rental_app/pages/date_formatter.dart';
+
+import 'package:firebase_auth/firebase_auth.dart';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 const List<String> karachiAreas = [
   'DHA',
@@ -90,9 +94,53 @@ class _ExplorePageState extends State<ExplorePage> {
                       fontSize: 21,
                     ),
                   ),
-                  const CircleAvatar(
-                    radius: 18,
-                    backgroundImage: AssetImage('assets/images/profile.jpg'),
+                  FutureBuilder<DocumentSnapshot>(
+                    future:
+                        FirebaseFirestore.instance
+                            .collection('users')
+                            .doc(FirebaseAuth.instance.currentUser?.uid)
+                            .get(),
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData) {
+                        return const CircleAvatar(
+                          radius: 18,
+                          backgroundColor: Colors.grey,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Colors.white,
+                          ),
+                        );
+                      }
+
+                      final userData =
+                          snapshot.data!.data() as Map<String, dynamic>?;
+                      if (userData == null) {
+                        return const CircleAvatar(
+                          radius: 18,
+                          backgroundColor: Colors.grey,
+                          child: Icon(Icons.person, color: Colors.white),
+                        );
+                      }
+
+                      final firstName = userData['first_name'] as String? ?? '';
+                      final lastName = userData['last_name'] as String? ?? '';
+                      final initials =
+                          (firstName.isNotEmpty ? firstName[0] : '') +
+                          (lastName.isNotEmpty ? lastName[0] : '');
+
+                      return CircleAvatar(
+                        radius: 18,
+                        backgroundColor: Colors.grey[700],
+                        child: Text(
+                          initials.toUpperCase(),
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                      );
+                    },
                   ),
                 ],
               ),
@@ -593,18 +641,8 @@ class CarCard extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      Row(
-                        children: [
-                          const Icon(
-                            Icons.star,
-                            color: Color(0xFFCCFF00),
-                            size: 18,
-                          ),
-                          const SizedBox(width: 4),
-                          Text(
-                            car.rating.toStringAsFixed(1),
-                            style: const TextStyle(fontSize: 14),
-                          ),
+                      Row(children: [
+                          
                         ],
                       ),
                     ],
@@ -731,30 +769,97 @@ class CarCard extends StatelessWidget {
 
                   const SizedBox(height: 12),
 
-                  // Owner Info
+                  // Owner Info with Rating
                   Row(
                     children: [
                       CircleAvatar(
-                        radius: 16,
-
+                        radius: 24,
+                        backgroundColor: Colors.grey[700],
                         child: Text(
-                          car.ownerInitials,
+                          car.ownerInitials.isNotEmpty
+                              ? car.ownerInitials.toUpperCase()
+                              : car.ownerName.isNotEmpty
+                              ? car.ownerName[0].toUpperCase()
+                              : "?",
                           style: const TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
-                            fontSize: 12,
+                            fontSize: 16,
                           ),
                         ),
                       ),
                       const SizedBox(width: 8),
                       Expanded(
-                        child: Text(
-                          car.ownerName,
-                          style: const TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                          ),
-                          overflow: TextOverflow.ellipsis,
+                        child: FutureBuilder<DocumentSnapshot>(
+                          future:
+                              FirebaseFirestore.instance
+                                  .collection('users')
+                                  .doc(car.ownerId)
+                                  .get(),
+                          builder: (context, snapshot) {
+                            // Default owner info
+                            Widget ownerInfo = Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  car.ownerName,
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ],
+                            );
+
+                            // If we have owner data from Firestore
+                            if (snapshot.hasData && snapshot.data != null) {
+                              final ownerData =
+                                  snapshot.data!.data()
+                                      as Map<String, dynamic>?;
+
+                              if (ownerData != null) {
+                                final ownerRating =
+                                    ownerData['average_rating'] ?? 0.0;
+                                final totalRatings =
+                                    ownerData['total_ratings'] ?? 0;
+
+                                // Enhanced owner info with rating from Firestore
+                                ownerInfo = Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      car.ownerName,
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                    Row(
+                                      children: [
+                                        const Icon(
+                                          Icons.star,
+                                          color: Color(0xFFCCFF00),
+                                          size: 14,
+                                        ),
+                                        const SizedBox(width: 2),
+                                        Text(
+                                          "${(ownerRating as num).toDouble().toStringAsFixed(1)} (${totalRatings})",
+                                          style: const TextStyle(
+                                            fontSize: 12,
+                                            color: Colors.grey,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                );
+                              }
+                            }
+
+                            return ownerInfo;
+                          },
                         ),
                       ),
                       const SizedBox(width: 8),
