@@ -77,8 +77,10 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
                 Text(
                   'Are you sure you want to book the ${car.name} ${car.type}?',
                   textAlign: TextAlign.center,
-                  style: const TextStyle(fontSize: 14, color: Color.fromARGB(150, 255, 255, 255)),
-                  
+                  style: const TextStyle(
+                    fontSize: 14,
+                    color: Color.fromARGB(150, 255, 255, 255),
+                  ),
                 ),
                 const SizedBox(height: 26),
                 Text(
@@ -86,7 +88,7 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
                   style: const TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.bold,
-                    color: Colors.white
+                    color: Colors.white,
                   ),
                 ),
                 const SizedBox(height: 30),
@@ -117,7 +119,7 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
                         ),
                       ),
                     ),
-                    SizedBox(width: 10,),
+                    SizedBox(width: 10),
                     ElevatedButton(
                       onPressed: () {
                         print("✅ Confirm button pressed");
@@ -480,9 +482,9 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
                                     car.name,
                                     style: const TextStyle(
                                       fontSize: 36,
-                                      
+
                                       fontWeight: FontWeight.bold,
-                                      color: Colors.white
+                                      color: Colors.white,
                                     ),
                                   ),
                                   Text(
@@ -490,7 +492,7 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
                                     style: const TextStyle(
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold,
-                                      color: Color.fromARGB(131, 255, 255, 255)
+                                      color: Color.fromARGB(131, 255, 255, 255),
                                     ),
                                   ),
 
@@ -504,19 +506,26 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
                                         style: const TextStyle(
                                           fontSize: 28,
                                           fontWeight: FontWeight.bold,
-                                          color: Colors.white
+                                          color: Colors.white,
                                         ),
                                       ),
                                       Column(
                                         children: [
-                                          SizedBox(height: 8.5,),
-                                          Text('/day',
-                                          style: const TextStyle(
-                                            fontSize: 20,
-                                            color: Color.fromARGB(131, 255, 255, 255)
-                                          ),),
+                                          SizedBox(height: 8.5),
+                                          Text(
+                                            '/day',
+                                            style: const TextStyle(
+                                              fontSize: 20,
+                                              color: Color.fromARGB(
+                                                131,
+                                                255,
+                                                255,
+                                                255,
+                                              ),
+                                            ),
+                                          ),
                                         ],
-                                      )
+                                      ),
                                     ],
                                   ),
 
@@ -580,17 +589,16 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
                                           ),
                                         ),
                                         const SizedBox(width: 4),
-                      Text(
-                        DateFormatter.formatDateRange(
-                          car.availableFrom,
-                          car.availableTo,
-                        ),
-                        style: const TextStyle(
-                          fontSize: 14,
-                          color: Colors.grey,
-                        ),
-                      ),
-                                        
+                                        Text(
+                                          DateFormatter.formatDateRange(
+                                            car.availableFrom,
+                                            car.availableTo,
+                                          ),
+                                          style: const TextStyle(
+                                            fontSize: 14,
+                                            color: Colors.grey,
+                                          ),
+                                        ),
                                       ],
                                     ),
                                   ),
@@ -774,38 +782,38 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
                                   const SizedBox(height: 20),
 
                                   // Book Now Button
-                                  
-                                     Row(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                       children: [
-                                         SizedBox(
-                                          width: 120,
-                                          height: 40,
-                                           child: FloatingActionButton.extended(
-                                            onPressed: () {
-                                              _showBookingConfirmation(context, car);
-                                            },
-                                            backgroundColor: Colors.white,
-                                            foregroundColor: Colors.black,
-                                             shape: RoundedRectangleBorder(
-                                             borderRadius: BorderRadius.circular(30), // 👈 Increase for more roundness
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      SizedBox(
+                                        width: 120,
+                                        height: 40,
+                                        child: FloatingActionButton.extended(
+                                          onPressed: () {
+                                            _showBookingConfirmation(
+                                              context,
+                                              car,
+                                            );
+                                          },
+                                          backgroundColor: Colors.white,
+                                          foregroundColor: Colors.black,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(
+                                              30,
+                                            ), // 👈 Increase for more roundness
+                                          ),
+                                          label: const Text(
+                                            'Book Now',
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold,
                                             ),
-                                            label: const Text(
-                                              'Book Now',
-                                              style: TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                                                               ),
-                                         ),
-                                         SizedBox(
-                                          width: 10,
-                                         )
-                                       ],
-                                       
-                                     ),
-                                  
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(width: 10),
+                                    ],
+                                  ),
                                 ],
                               ),
                             ),
@@ -821,7 +829,6 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
                   Container(
                     padding: const EdgeInsets.symmetric(vertical: 8),
                     decoration: BoxDecoration(
-                      
                       border: Border(
                         top: BorderSide(color: Colors.grey[900]!, width: 1),
                       ),

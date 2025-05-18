@@ -418,7 +418,7 @@ class _PastRentalsScreenState extends State<PastRentalsScreen> {
                             return Container(
                               margin: const EdgeInsets.only(bottom: 16.0),
                               decoration: BoxDecoration(
-                                color: const Color(0xFFE7FE54),
+                                color: const Color.fromARGB(255, 37, 37, 37),
                                 borderRadius: BorderRadius.circular(16.0),
                               ),
                               child: Stack(
@@ -433,7 +433,12 @@ class _PastRentalsScreenState extends State<PastRentalsScreen> {
                                         Text(
                                           rental['carName'],
                                           style: const TextStyle(
-                                            color: Colors.black,
+                                            color: Color.fromARGB(
+                                              255,
+                                              219,
+                                              219,
+                                              219,
+                                            ),
                                             fontSize: 20,
                                             fontWeight: FontWeight.bold,
                                           ),
