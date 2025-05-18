@@ -924,20 +924,25 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                        Color(0xFFCCFF00),
+                  Center(
+                      child: TweenAnimationBuilder(
+                        tween: Tween<double>(begin: 0, end: 1),
+                        duration: const Duration(seconds: 1),
+                        curve: Curves.linear,
+                        builder: (context, value, child) {
+                          return Transform.rotate(
+                            angle: value * 6.28, // 2 * pi
+                            child: child,
+                          );
+                        },
+                        child: Image.asset(
+                          'assets/images/wheel.png',
+                          width: 80,
+                          height: 80,
+                          opacity: AlwaysStoppedAnimation(0.5),
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 20),
-                    Text(
-                      _loadingMessage,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                    )
                   ],
                 ),
               ),

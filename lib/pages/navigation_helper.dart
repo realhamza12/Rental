@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'list_car_screen.dart';
 import 'past_rentals_screen.dart';
 import 'listing_page.dart';
+import 'profile_page.dart';
 
 class NavigationHelper {
   // Navigate to home (Listing Page)
@@ -55,7 +56,7 @@ class NavigationHelper {
     // Check current route to avoid duplicate screens
     bool isCurrentRoutePastRentals = false;
     Navigator.popUntil(context, (route) {
-      if (route.settings.name == 'PastRentalsScreen') {
+      if (route.settings.name == 'ProfilePage') {
         isCurrentRoutePastRentals = true;
         return true;
       }
@@ -71,8 +72,8 @@ class NavigationHelper {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => const PastRentalsScreen(),
-        settings: const RouteSettings(name: 'PastRentalsScreen'),
+        builder: (context) => const ProfilePage(),
+        settings: const RouteSettings(name: 'ProfilePage'),
       ),
     );
   }

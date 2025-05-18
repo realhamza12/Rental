@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:rental_app/pages/profile_page.dart';
 import 'list_car_screen.dart';
 import 'past_rentals_screen.dart';
 import 'car_model.dart';
@@ -481,7 +482,7 @@ class _ExplorePageState extends State<ExplorePage> {
       // Navigate to Past Rentals screen
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => PastRentalsScreen()),
+        MaterialPageRoute(builder: (context) => ProfilePage()),
       );
     }
   }
@@ -624,7 +625,7 @@ class CarCard extends StatelessWidget {
                   Row(
                     children: [
                       Text(
-                        '\$${car.price.toInt()}',
+                        '\Rs. ${car.price.toInt()}',
                         style: const TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
@@ -666,17 +667,6 @@ class CarCard extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                       ),
                       const SizedBox(width: 16),
-                     
-                        
-                    ],
-                  ),
-                  
-
-                  const SizedBox(height: 8),
-
-                  // Seater and Days
-                  Row(
-                    children: [
                       const Icon(
                         Icons.event_seat,
                         color: Colors.grey,
@@ -706,8 +696,16 @@ class CarCard extends StatelessWidget {
                       ),
                       const SizedBox(width: 16),
                       
+                     
+                        
                     ],
                   ),
+                  
+
+                  const SizedBox(height: 8),
+
+                  // Seater and Days
+                  
 
                   const SizedBox(height: 12),
 

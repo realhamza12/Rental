@@ -117,17 +117,41 @@ class BookingConfirmationScreen extends StatelessWidget {
                       style: const TextStyle(
                         fontSize: 28,
                         fontWeight: FontWeight.bold,
+
+                        color: Colors.white
+                        
                       ),
                     ),
                     Text(
                       car.type,
                       style: const TextStyle(
-                        fontSize: 28,
+                        fontSize: 18,
                         fontWeight: FontWeight.bold,
+                        color: Color.fromARGB(125, 255, 255, 255)
                       ),
                     ),
 
-                    const Spacer(),
+                    SizedBox(
+                      height: 34,
+                    ),
+
+
+
+                    Container(
+                      width: 80,
+                      height: 80,
+                      decoration: const BoxDecoration(
+                        color: const Color(0xFFCCFF00),
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.check,
+                        color: Colors.black,
+                        size: 50,
+                      ),
+                    ),
+
+                    SizedBox(height: 20,),
 
                     // Booking Text
                     Text(
@@ -149,30 +173,21 @@ class BookingConfirmationScreen extends StatelessWidget {
                       ),
                     ),
 
-                    const SizedBox(height: 30),
+                    const SizedBox(height: 15),
 
                     // Checkmark Icon
-                    Container(
-                      width: 80,
-                      height: 80,
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
-                        shape: BoxShape.circle,
-                      ),
-                      child: const Icon(
-                        Icons.check,
-                        color: Colors.black,
-                        size: 50,
-                      ),
-                    ),
+                    
 
-                    const SizedBox(height: 30),
+                    
 
                     // Note Text
-                    const Text(
-                      'note: keep your CNIC ready. The owner will contact you shortly.',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 16, color: Colors.white),
+                    SizedBox(
+                      width: 380,
+                      child: const Text(
+                        'note: keep your CNIC ready. The owner will contact you shortly.',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 16, color: Color.fromARGB(157, 255, 255, 255)),
+                      ),
                     ),
 
                     const SizedBox(height: 30),
@@ -186,8 +201,8 @@ class BookingConfirmationScreen extends StatelessWidget {
                         backgroundColor: const Color(0xFFCCFF00),
                         foregroundColor: Colors.black,
                         padding: const EdgeInsets.symmetric(
-                          horizontal: 40,
-                          vertical: 12,
+                          horizontal: 75,
+                          vertical: 16,
                         ),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30),
@@ -210,7 +225,7 @@ class BookingConfirmationScreen extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(vertical: 8),
               decoration: BoxDecoration(
-                color: Colors.black,
+                
                 border: Border(
                   top: BorderSide(color: Colors.grey[900]!, width: 1),
                 ),

@@ -450,7 +450,12 @@ class _PastRentalsScreenState extends State<PastRentalsScreen> {
                                           children: [
                                             const Icon(
                                               Icons.location_on,
-                                              color: Colors.black,
+                                              color: Color.fromARGB(
+                                                255,
+                                                219,
+                                                219,
+                                                219,
+                                              ),
                                               size: 16,
                                             ),
                                             const SizedBox(width: 4),
@@ -458,7 +463,12 @@ class _PastRentalsScreenState extends State<PastRentalsScreen> {
                                               child: Text(
                                                 rental['location'],
                                                 style: const TextStyle(
-                                                  color: Colors.black,
+                                                  color: Color.fromARGB(
+                                                    255,
+                                                    219,
+                                                    219,
+                                                    219,
+                                                  ),
                                                   fontSize: 14,
                                                 ),
                                                 overflow: TextOverflow.ellipsis,
@@ -473,14 +483,24 @@ class _PastRentalsScreenState extends State<PastRentalsScreen> {
                                           children: [
                                             const Icon(
                                               Icons.calendar_today,
-                                              color: Colors.black,
+                                              color: Color.fromARGB(
+                                                255,
+                                                219,
+                                                219,
+                                                219,
+                                              ),
                                               size: 16,
                                             ),
                                             const SizedBox(width: 4),
                                             Text(
                                               '$startDate - $endDate',
                                               style: const TextStyle(
-                                                color: Colors.black,
+                                                color: Color.fromARGB(
+                                                  255,
+                                                  219,
+                                                  219,
+                                                  219,
+                                                ),
                                                 fontSize: 14,
                                               ),
                                             ),
@@ -505,7 +525,7 @@ class _PastRentalsScreenState extends State<PastRentalsScreen> {
                                                         (rental['rating'] ?? 0)
                                                     ? Icons.star
                                                     : Icons.star_border,
-                                                color: Colors.black,
+                                                color: const Color(0xFFCCFF00),
                                                 size: 20,
                                               ),
                                             ),
@@ -517,7 +537,12 @@ class _PastRentalsScreenState extends State<PastRentalsScreen> {
                                         Text(
                                           'Total: \$${rental['totalAmount']}',
                                           style: const TextStyle(
-                                            color: Colors.black,
+                                            color: Color.fromARGB(
+                                              255,
+                                              219,
+                                              219,
+                                              219,
+                                            ),
                                             fontSize: 14,
                                             fontWeight: FontWeight.bold,
                                           ),
@@ -538,7 +563,7 @@ class _PastRentalsScreenState extends State<PastRentalsScreen> {
                                       ),
                                       child: Image.network(
                                         rental['imageUrl'],
-                                        width: 150,
+                                        width: 170,
                                         fit: BoxFit.cover,
                                         loadingBuilder: (
                                           context,
