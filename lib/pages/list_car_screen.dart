@@ -99,7 +99,7 @@ class _ListCarScreenState extends State<ListCarScreen> {
   ];
 
   // Transmission options
-  final List<String> _transmissionOptions = ['Automatic', 'Manual'];
+  final List<String> _transmissionOptions = ['Automatic', 'Manual', 'Hybrid'];
 
   @override
   Widget build(BuildContext context) {
