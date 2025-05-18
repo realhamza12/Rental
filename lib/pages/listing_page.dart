@@ -666,22 +666,8 @@ class CarCard extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                       ),
                       const SizedBox(width: 16),
-                      const Icon(
-                        Icons.date_range,
-                        color: Colors.grey,
-                        size: 18,
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        DateFormatter.formatDateRange(
-                          car.availableFrom,
-                          car.availableTo,
-                        ),
-                        style: const TextStyle(
-                          fontSize: 14,
-                          color: Colors.grey,
-                        ),
-                      ),
+                     
+                        
                     ],
                   ),
                   
@@ -719,19 +705,7 @@ class CarCard extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(width: 16),
-                      const Icon(
-                        Icons.event_note,
-                        color: Colors.grey,
-                        size: 18,
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        '${car.kms} Kms',
-                        style: const TextStyle(
-                          fontSize: 14,
-                          color: Colors.grey,
-                        ),
-                      ),
+                      
                     ],
                   ),
 

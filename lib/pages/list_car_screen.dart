@@ -176,7 +176,8 @@ class _ListCarScreenState extends State<ListCarScreen> {
                                       );
                                     },
                                     child: Image.asset(
-                                      'assets/images/wheel.jpg',
+                                      'assets/images/wheel.png',
+                                      opacity: AlwaysStoppedAnimation(0.5),
                                       width: 80,
                                       height: 80,
                                     ),
@@ -926,7 +927,7 @@ class _ListCarScreenState extends State<ListCarScreen> {
                   Container(
                     padding: const EdgeInsets.symmetric(vertical: 8),
                     decoration: BoxDecoration(
-                      color: Colors.black,
+                      
                       border: Border(
                         top: BorderSide(color: Colors.grey[900]!, width: 1),
                       ),
