@@ -24,7 +24,8 @@ class Car {
   final bool isAvailable;
   final String? bookedBy;
   final String? bookingId;
-final int kms;
+  final int kms;
+
   Car({
     required this.id,
     required this.name,
@@ -44,8 +45,8 @@ final int kms;
     required this.ownerId,
     this.isAvailable = true,
     this.bookedBy,
-     required this.kms, 
     this.bookingId,
+    required this.kms,
   });
 
   factory Car.fromMap(Map<String, dynamic> data, DocumentSnapshot doc) {
@@ -84,5 +85,4 @@ final int kms;
       kms: data['kms'] ?? 0,
     );
   }
-
 }

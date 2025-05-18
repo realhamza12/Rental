@@ -36,7 +36,7 @@ class SideBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: 250,
-      color: Colors.black,
+      color: const Color.fromARGB(255, 14, 14, 14),
       child: SafeArea(
         child: Column(
           children: [
@@ -44,7 +44,7 @@ class SideBar extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(16.0),
               decoration: BoxDecoration(
-                color: const Color.fromARGB(255, 0, 0, 0),
+                color: Colors.black,
                 border: Border(
                   bottom: BorderSide(color: Colors.grey[800]!, width: 1),
                 ),
@@ -113,7 +113,10 @@ class SideBar extends StatelessWidget {
                     ),
                   ),
                   IconButton(
-                    icon: const Icon(Icons.close, color: Colors.white),
+                    icon: const Icon(
+                      Icons.close,
+                      color: Color.fromARGB(206, 255, 255, 255),
+                    ),
                     onPressed: () => onClose(),
                   ),
                 ],
@@ -122,110 +125,149 @@ class SideBar extends StatelessWidget {
 
             // Menu Items
             Expanded(
-              child: ListView(
-                padding: EdgeInsets.zero,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
                 children: [
-                  _buildMenuItem(
-                    context,
-                    icon: Icons.home,
-                    title: 'Home',
-                    onTap: () {
-                      onClose();
-                      // Already on home page
-                    },
+                  Column(
+                    children: [
+                      _buildMenuItem(
+                        context,
+                        icon: Icons.home,
+                        title: 'Home',
+                        textColor: Color.fromARGB(206, 255, 255, 255),
+                        iconColor: Color.fromARGB(206, 255, 255, 255),
+                        onTap: () {
+                          onClose();
+                          // Already on home page
+                        },
+                      ),
+                      SizedBox(height: 10),
+
+                      StreamBuilder<QuerySnapshot>(
+                        stream:
+                            FirebaseFirestore.instance
+                                .collection('users')
+                                .doc(FirebaseAuth.instance.currentUser?.uid)
+                                .collection('notifications')
+                                .where('seen', isEqualTo: false)
+                                .snapshots(),
+                        builder: (context, snapshot) {
+                          final hasUnseen =
+                              snapshot.hasData &&
+                              snapshot.data!.docs.isNotEmpty;
+
+                          return Material(
+                            color: Colors.transparent,
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.of(context).pop(); // Close sidebar
+                                WidgetsBinding.instance.addPostFrameCallback((
+                                  _,
+                                ) {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder:
+                                          (context) =>
+                                              const NotificationsScreen(),
+                                    ),
+                                  );
+                                });
+                              },
+
+                              child: ListTile(
+                                leading: Stack(
+                                  children: [
+                                    const Icon(
+                                      Icons.notifications,
+                                      color: Color.fromARGB(206, 255, 255, 255),
+                                    ),
+                                    if (hasUnseen)
+                                      Positioned(
+                                        right: 0,
+                                        top: 0,
+                                        child: Container(
+                                          width: 8,
+                                          height: 8,
+                                          decoration: const BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: const Color(0xFFCCFF00),
+                                          ),
+                                        ),
+                                      ),
+                                  ],
+                                ),
+                                title: const Text(
+                                  'Notifications',
+                                  style: TextStyle(
+                                    color: Color.fromARGB(206, 255, 255, 255),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                      SizedBox(height: 10),
+                      _buildMenuItem(
+                        context,
+                        icon: Icons.directions_car,
+                        title: 'My Cars',
+                        textColor: Color.fromARGB(206, 255, 255, 255),
+                        iconColor: Color.fromARGB(206, 255, 255, 255),
+                        onTap: () {
+                          onClose();
+                          // Navigate to My Cars page
+                        },
+                      ),
+                      SizedBox(height: 10),
+                      _buildMenuItem(
+                        context,
+                        icon: Icons.history,
+                        title: 'Rental History',
+                        textColor: Color.fromARGB(206, 255, 255, 255),
+                        iconColor: Color.fromARGB(206, 255, 255, 255),
+                        onTap: () {
+                          onClose();
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => PastRentalsScreen(),
+                            ),
+                          );
+                        },
+                      ),
+                    ],
                   ),
 
-                  StreamBuilder<QuerySnapshot>(
-                    stream:
-                        FirebaseFirestore.instance
-                            .collection('users')
-                            .doc(FirebaseAuth.instance.currentUser?.uid)
-                            .collection('notifications')
-                            .where('seen', isEqualTo: false)
-                            .snapshots(),
-                    builder: (context, snapshot) {
-                      final hasUnseen =
-                          snapshot.hasData && snapshot.data!.docs.isNotEmpty;
-
-                      return Material(
-                        color: Colors.transparent,
-                        child: InkWell(
-                          onTap: () {
-                            Navigator.of(context).pop(); // Close sidebar
-                            WidgetsBinding.instance.addPostFrameCallback((_) {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder:
-                                      (context) => const NotificationsScreen(),
-                                ),
-                              );
-                            });
-                          },
-
-                          child: ListTile(
-                            leading: Stack(
-                              children: [
-                                const Icon(
-                                  Icons.notifications,
-                                  color: Colors.white,
-                                ),
-                                if (hasUnseen)
-                                  Positioned(
-                                    right: 0,
-                                    top: 0,
-                                    child: Container(
-                                      width: 8,
-                                      height: 8,
-                                      decoration: const BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: Colors.red,
-                                      ),
-                                    ),
-                                  ),
-                              ],
-                            ),
-                            title: const Text(
-                              'Notifications',
-                              style: TextStyle(color: Colors.white),
-                            ),
+                  // const Divider(color: Colors.grey),
+                  Column(
+                    children: [
+                      const Divider(color: Color.fromARGB(68, 158, 158, 158)),
+                      SizedBox(height: 8),
+                      ElevatedButton(
+                        onPressed: () => _logout(context),
+                        child: Text(
+                          'Logout',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w700, // increase text size
                           ),
                         ),
-                      );
-                    },
-                  ),
-                  _buildMenuItem(
-                    context,
-                    icon: Icons.directions_car,
-                    title: 'My Cars',
-                    onTap: () {
-                      onClose();
-                      // Navigate to My Cars page
-                    },
-                  ),
-                  _buildMenuItem(
-                    context,
-                    icon: Icons.history,
-                    title: 'Rental History',
-                    onTap: () {
-                      onClose();
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => PastRentalsScreen(),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(
+                            0xFFCCFF00,
+                          ), // button background color
+                          minimumSize: Size(230, 54), // width: 230, height: 54
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 20,
+                          ), // optional: padding inside button
                         ),
-                      );
-                    },
-                  ),
-
-                  const Divider(color: Colors.grey),
-                  _buildMenuItem(
-                    context,
-                    icon: Icons.logout,
-                    title: 'Logout',
-                    onTap: () => _logout(context),
-                    textColor: Colors.red,
-                    iconColor: Colors.red,
+                      ),
+                      SizedBox(height: 16),
+                    ],
                   ),
                 ],
               ),
