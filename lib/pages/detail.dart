@@ -6,7 +6,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dots_indicator/dots_indicator.dart';
 import 'car_model.dart';
 import 'booking_confirmation_screen.dart';
-
+import 'package:rental_app/pages/date_formatter.dart';
 import 'navigation_helper.dart';
 import 'car_detail_bloc.dart';
 import 'car_detail_event.dart';
@@ -44,7 +44,7 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
         return Container(
           height: MediaQuery.of(context).size.height * 0.4,
           decoration: BoxDecoration(
-            color: Colors.grey[900],
+            color: const Color.fromARGB(255, 14, 14, 14),
             borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(20),
               topRight: Radius.circular(20),
@@ -63,32 +63,35 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
                     borderRadius: BorderRadius.circular(10),
                   ),
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 40),
                 Text(
                   'Confirm Booking',
                   style: TextStyle(
-                    fontSize: 32,
-                    fontWeight: FontWeight.bold,
+                    fontSize: 28,
+                    // fontWeight: FontWeight.bold,
+                    fontFamily: "Conthrax",
                     color: Theme.of(context).primaryColor,
                   ),
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 0),
                 Text(
                   'Are you sure you want to book the ${car.name} ${car.type}?',
                   textAlign: TextAlign.center,
-                  style: const TextStyle(fontSize: 14),
+                  style: const TextStyle(fontSize: 14, color: Color.fromARGB(150, 255, 255, 255)),
+                  
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(height: 26),
                 Text(
-                  'Total: \$${(car.price * car.days).toInt()} for ${car.days} days',
+                  'Total: \RS. ${(car.price * car.days).toInt()} for ${car.days} days',
                   style: const TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.bold,
+                    color: Colors.white
                   ),
                 ),
                 const SizedBox(height: 30),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     ElevatedButton(
                       onPressed: () {
@@ -99,8 +102,8 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
                         backgroundColor: Colors.grey[800],
                         foregroundColor: Colors.white,
                         padding: const EdgeInsets.symmetric(
-                          horizontal: 30,
-                          vertical: 12,
+                          horizontal: 54,
+                          vertical: 18,
                         ),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30),
@@ -114,6 +117,7 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
                         ),
                       ),
                     ),
+                    SizedBox(width: 10,),
                     ElevatedButton(
                       onPressed: () {
                         print("✅ Confirm button pressed");
@@ -126,8 +130,8 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
                         backgroundColor: Colors.white,
                         foregroundColor: Colors.black,
                         padding: const EdgeInsets.symmetric(
-                          horizontal: 30,
-                          vertical: 12,
+                          horizontal: 54,
+                          vertical: 18,
                         ),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30),
@@ -476,6 +480,7 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
                                     car.name,
                                     style: const TextStyle(
                                       fontSize: 36,
+                                      
                                       fontWeight: FontWeight.bold,
                                       color: Colors.white
                                     ),
@@ -504,7 +509,7 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
                                       ),
                                       Column(
                                         children: [
-                                          SizedBox(height: 9,),
+                                          SizedBox(height: 8.5,),
                                           Text('/day',
                                           style: const TextStyle(
                                             fontSize: 20,
@@ -574,6 +579,18 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
                                             color: Colors.grey,
                                           ),
                                         ),
+                                        const SizedBox(width: 4),
+                      Text(
+                        DateFormatter.formatDateRange(
+                          car.availableFrom,
+                          car.availableTo,
+                        ),
+                        style: const TextStyle(
+                          fontSize: 14,
+                          color: Colors.grey,
+                        ),
+                      ),
+                                        
                                       ],
                                     ),
                                   ),
@@ -804,7 +821,7 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
                   Container(
                     padding: const EdgeInsets.symmetric(vertical: 8),
                     decoration: BoxDecoration(
-                      color: Colors.black,
+                      
                       border: Border(
                         top: BorderSide(color: Colors.grey[900]!, width: 1),
                       ),
