@@ -55,7 +55,7 @@ class ListCarBloc extends Bloc<ListCarEvent, ListCarState> {
           'transmission': event.transmission,
           'days': event.days, // placeholder
           'seater': event.seater,
-          'kms': event.kms,
+          'kms' :event.kms,
           'availableFrom': Timestamp.fromDate(event.availableFrom),
           'availableTo': Timestamp.fromDate(event.availableTo),
         };

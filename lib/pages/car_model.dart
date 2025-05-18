@@ -24,7 +24,7 @@ class Car {
   final bool isAvailable;
   final String? bookedBy;
   final String? bookingId;
-
+final int kms;
   Car({
     required this.id,
     required this.name,
@@ -44,6 +44,7 @@ class Car {
     required this.ownerId,
     this.isAvailable = true,
     this.bookedBy,
+     required this.kms, 
     this.bookingId,
   });
 
@@ -80,8 +81,8 @@ class Car {
       isAvailable: data['isAvailable'] ?? true,
       bookedBy: data['bookedBy'],
       bookingId: data['bookingId'],
+      kms: data['kms'] ?? 0,
     );
   }
 
-  get kms => null;
 }

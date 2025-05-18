@@ -6,13 +6,27 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dots_indicator/dots_indicator.dart';
 import 'car_model.dart';
 import 'booking_confirmation_screen.dart';
-
+import 'package:rental_app/pages/date_formatter.dart';
 import 'navigation_helper.dart';
 import 'car_detail_bloc.dart';
 import 'car_detail_event.dart';
 import 'car_detail_state.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+
+const TextStyle carTitleTextStyle = TextStyle(
+  fontSize: 28,
+
+  fontWeight: FontWeight.normal,
+  fontFamily: 'Conthrax', // or any custom font you use
+  color: Color.fromARGB(
+    255,
+    223,
+    223,
+    223,
+  ), // or Colors.white if on dark background
+  letterSpacing: 0.5,
+);
 
 class CarDetailScreen extends StatefulWidget {
   final String carId;
@@ -472,18 +486,22 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
                                   const SizedBox(height: 16),
 
                                   // Car Name
-                                  Text(
-                                    car.name,
-                                    style: const TextStyle(
-                                      fontSize: 28,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  Text(
-                                    car.type,
-                                    style: const TextStyle(
-                                      fontSize: 28,
-                                      fontWeight: FontWeight.bold,
+                                  Center(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          car.name,
+                                          style: carTitleTextStyle,
+                                          textAlign: TextAlign.center,
+                                        ),
+                                        Text(
+                                          car.type,
+                                          style: carTitleTextStyle,
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ],
                                     ),
                                   ),
 
@@ -491,9 +509,10 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
 
                                   // Price
                                   Text(
-                                    '\$${car.price.toInt()}/day',
+                                    '\RS.${car.price.toInt()}/day',
                                     style: const TextStyle(
-                                      fontSize: 28,
+                                      fontSize: 18,
+
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
@@ -535,7 +554,7 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
                                       ),
                                       const SizedBox(width: 4),
                                       Text(
-                                        '${car.seater} seats',
+                                        '${car.seater} seater',
                                         style: const TextStyle(
                                           fontSize: 16,
                                           color: Colors.grey,
@@ -557,7 +576,30 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
                                       ),
                                     ],
                                   ),
-
+                                  const SizedBox(
+                                    height: 12,
+                                  ), // spacing between rows
+                                  // 👉 Date range row here
+                                  Row(
+                                    children: [
+                                      const Icon(
+                                        Icons.date_range,
+                                        color: Colors.grey,
+                                        size: 20,
+                                      ),
+                                      const SizedBox(width: 4),
+                                      Text(
+                                        DateFormatter.formatDateRange(
+                                          car.availableFrom,
+                                          car.availableTo,
+                                        ),
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                          color: Colors.grey,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                   const SizedBox(height: 16),
 
                                   // Owner Info

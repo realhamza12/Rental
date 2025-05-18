@@ -10,6 +10,7 @@ import 'sidebar.dart';
 import 'listing_bloc.dart';
 import 'listing_event.dart';
 import 'listing_state.dart';
+import 'package:rental_app/pages/date_formatter.dart';
 
 const List<String> karachiAreas = [
   'DHA',
@@ -600,7 +601,7 @@ class CarCard extends StatelessWidget {
 
                   // Price
                   Text(
-                    '\$${car.price.toInt()}/day',
+                    '\Rs. ${car.price.toInt()}/day',
                     style: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -629,14 +630,29 @@ class CarCard extends StatelessWidget {
                         size: 18,
                       ),
                       const SizedBox(width: 4),
-                      Expanded(
-                        child: Text(
-                          car.location,
-                          style: const TextStyle(
-                            fontSize: 14,
-                            color: Colors.grey,
-                          ),
-                          overflow: TextOverflow.ellipsis,
+                      Text(
+                        car.location,
+                        style: const TextStyle(
+                          fontSize: 14,
+                          color: Colors.grey,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(width: 16),
+                      const Icon(
+                        Icons.date_range,
+                        color: Colors.grey,
+                        size: 18,
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        DateFormatter.formatDateRange(
+                          car.availableFrom,
+                          car.availableTo,
+                        ),
+                        style: const TextStyle(
+                          fontSize: 14,
+                          color: Colors.grey,
                         ),
                       ),
                     ],
@@ -675,11 +691,7 @@ class CarCard extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(width: 16),
-                      const Icon(
-                        Icons.event_note,
-                        color: Colors.grey,
-                        size: 18,
-                      ),
+                      const Icon(Icons.alt_route, color: Colors.grey, size: 18),
                       const SizedBox(width: 4),
                       Text(
                         '${car.kms} Kms',
