@@ -850,6 +850,13 @@ class _ListCarScreenState extends State<ListCarScreen> {
                                           const SizedBox(height: 24),
 
                                           // Car Images
+                                          const Text(
+                                            '* Car Images (Required):',
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              color: Colors.white,
+                                            ),
+                                          ),
                                           const SizedBox(height: 8),
 
                                           // Image upload buttons
@@ -861,22 +868,41 @@ class _ListCarScreenState extends State<ListCarScreen> {
                                               ElevatedButton.icon(
                                                 onPressed: _pickImages,
                                                 style: ElevatedButton.styleFrom(
-                                                  backgroundColor: const Color(
-                                                    0xFF201E25,
-                                                  ),
+                                                  backgroundColor:
+                                                      _selectedImages.isEmpty
+                                                          ? const Color.fromARGB(
+                                                            255,
+                                                            255,
+                                                            255,
+                                                            255,
+                                                          ).withOpacity(0.2)
+                                                          : const Color(
+                                                            0xFF201E25,
+                                                          ),
                                                   foregroundColor: Colors.white,
                                                   shape: RoundedRectangleBorder(
                                                     borderRadius:
                                                         BorderRadius.circular(
                                                           20,
                                                         ),
+                                                    side: BorderSide(
+                                                      color:
+                                                          _selectedImages
+                                                                  .isEmpty
+                                                              ? Colors.red
+                                                              : Colors
+                                                                  .transparent,
+                                                      width: 1,
+                                                    ),
                                                   ),
                                                 ),
                                                 icon: const Icon(
                                                   Icons.photo_library,
                                                 ),
-                                                label: const Text(
-                                                  'Upload Car Images',
+                                                label: Text(
+                                                  _selectedImages.isEmpty
+                                                      ? 'Upload Car Images (Required)'
+                                                      : 'Upload Car Images (${_selectedImages.length} selected)',
                                                 ),
                                               ),
                                             ],
@@ -1077,6 +1103,17 @@ class _ListCarScreenState extends State<ListCarScreen> {
 
   void _submitForm(BuildContext context) {
     if (!_formKey.currentState!.validate()) return;
+
+    // Check if at least one image is selected
+    if (_selectedImages.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please upload at least one image of your car'),
+          backgroundColor: Colors.transparent,
+        ),
+      );
+      return;
+    }
 
     final carName = _carNameController.text.trim();
     final rentalPrice = double.tryParse(_priceController.text.trim()) ?? 0;

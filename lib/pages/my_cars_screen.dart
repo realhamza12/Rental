@@ -342,7 +342,7 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
                 child: const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.add),
+                    Icon(Icons.add, color: Colors.white),
                     SizedBox(width: 8),
                     Text(
                       'Add New Car',
@@ -378,9 +378,10 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
                                 );
                               },
                               child: Image.asset(
-                                'assets/images/wheel.jpg',
+                                'assets/images/wheel.png',
                                 width: 80,
                                 height: 80,
+                                opacity: const AlwaysStoppedAnimation(0.5),
                               ),
                             ),
                             const SizedBox(height: 16),

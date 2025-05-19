@@ -423,16 +423,39 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
                                                             return child;
                                                           }
                                                           return Center(
-                                                            child: CircularProgressIndicator(
-                                                              value:
-                                                                  loadingProgress
-                                                                              .expectedTotalBytes !=
-                                                                          null
-                                                                      ? loadingProgress
-                                                                              .cumulativeBytesLoaded /
-                                                                          loadingProgress
-                                                                              .expectedTotalBytes!
-                                                                      : null,
+                                                            child: TweenAnimationBuilder(
+                                                              tween:
+                                                                  Tween<double>(
+                                                                    begin: 0,
+                                                                    end: 1,
+                                                                  ),
+                                                              duration:
+                                                                  const Duration(
+                                                                    seconds: 1,
+                                                                  ),
+                                                              curve:
+                                                                  Curves.linear,
+                                                              builder: (
+                                                                context,
+                                                                value,
+                                                                child,
+                                                              ) {
+                                                                return Transform.rotate(
+                                                                  angle:
+                                                                      value *
+                                                                      6.28, // 2 * pi
+                                                                  child: child,
+                                                                );
+                                                              },
+                                                              child: Image.asset(
+                                                                'assets/images/wheel.png',
+                                                                width: 80,
+                                                                height: 80,
+                                                                opacity:
+                                                                    AlwaysStoppedAnimation(
+                                                                      0.5,
+                                                                    ),
+                                                              ),
                                                             ),
                                                           );
                                                         },
@@ -621,7 +644,44 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
                                             color: Colors.grey,
                                           ),
                                         ),
+                                        const SizedBox(width: 16),
+                                        const Icon(
+                                          Icons.speed,
+                                          color: Colors.grey,
+                                          size: 20,
+                                        ),
                                         const SizedBox(width: 4),
+                                        FutureBuilder<DocumentSnapshot>(
+                                          future:
+                                              FirebaseFirestore.instance
+                                                  .collection('cars')
+                                                  .doc(car.id)
+                                                  .get(),
+                                          builder: (context, snapshot) {
+                                            if (!snapshot.hasData) {
+                                              return const Text(
+                                                'Loading...',
+                                                style: TextStyle(
+                                                  fontSize: 16,
+                                                  color: Colors.grey,
+                                                ),
+                                              );
+                                            }
+
+                                            final carData =
+                                                snapshot.data!.data()
+                                                    as Map<String, dynamic>?;
+                                            final kms = carData?['kms'] ?? 0;
+
+                                            return Text(
+                                              '$kms kms',
+                                              style: const TextStyle(
+                                                fontSize: 16,
+                                                color: Colors.grey,
+                                              ),
+                                            );
+                                          },
+                                        ),
                                       ],
                                     ),
                                   ),

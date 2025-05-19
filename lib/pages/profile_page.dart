@@ -9,6 +9,11 @@ import 'profile_event.dart';
 import 'profile_state.dart';
 import 'auth_service.dart';
 import 'dart:ui';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
+import 'dart:ui';
+import 'navigation_helper.dart';
+import 'sidebar.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -83,7 +88,13 @@ class _ProfilePageState extends State<ProfilePage> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         GestureDetector(
-                          onTap: () => Navigator.pop(context),
+                          onTap:
+                              () => Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const ListingPage(),
+                                ),
+                              ),
                           child: Container(
                             padding: const EdgeInsets.all(8.0),
                             decoration: BoxDecoration(
@@ -101,11 +112,55 @@ class _ProfilePageState extends State<ProfilePage> {
                             fontSize: 21,
                           ),
                         ),
-                        const CircleAvatar(
-                          radius: 18,
-                          backgroundImage: AssetImage(
-                            'assets/images/profile.jpg',
-                          ),
+                        FutureBuilder<DocumentSnapshot>(
+                          future:
+                              FirebaseFirestore.instance
+                                  .collection('users')
+                                  .doc(FirebaseAuth.instance.currentUser?.uid)
+                                  .get(),
+                          builder: (context, snapshot) {
+                            if (!snapshot.hasData) {
+                              return const CircleAvatar(
+                                radius: 24,
+                                backgroundColor: Colors.grey,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: Colors.white,
+                                ),
+                              );
+                            }
+
+                            final userData =
+                                snapshot.data!.data() as Map<String, dynamic>?;
+                            if (userData == null) {
+                              return const CircleAvatar(
+                                radius: 24,
+                                backgroundColor: Colors.grey,
+                                child: Icon(Icons.person, color: Colors.white),
+                              );
+                            }
+
+                            final firstName =
+                                userData['first_name'] as String? ?? '';
+                            final lastName =
+                                userData['last_name'] as String? ?? '';
+                            final initials =
+                                (firstName.isNotEmpty ? firstName[0] : '') +
+                                (lastName.isNotEmpty ? lastName[0] : '');
+
+                            return CircleAvatar(
+                              radius: 24,
+                              backgroundColor: Colors.grey[700],
+                              child: Text(
+                                initials.toUpperCase(),
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            );
+                          },
                         ),
                       ],
                     ),
@@ -270,6 +325,7 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget _buildProfileContent(User user, Map<String, dynamic> userData) {
     final fullName =
         '${userData['first_name'] ?? ''} ${userData['last_name'] ?? ''}';
+    final userId = FirebaseAuth.instance.currentUser?.uid;
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16.0),
@@ -280,9 +336,57 @@ class _ProfilePageState extends State<ProfilePage> {
           Center(
             child: Column(
               children: [
-                const CircleAvatar(
-                  radius: 50,
-                  backgroundImage: AssetImage('assets/images/profile.jpg'),
+                FutureBuilder<DocumentSnapshot>(
+                  future:
+                      FirebaseFirestore.instance
+                          .collection('users')
+                          .doc(FirebaseAuth.instance.currentUser?.uid)
+                          .get(),
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData) {
+                      return const CircleAvatar(
+                        radius: 50,
+                        backgroundColor: Colors.grey,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: Colors.white,
+                        ),
+                      );
+                    }
+
+                    final userData =
+                        snapshot.data!.data() as Map<String, dynamic>?;
+                    if (userData == null) {
+                      return const CircleAvatar(
+                        radius: 50,
+                        backgroundColor: Colors.grey,
+                        child: Icon(
+                          Icons.person,
+                          color: Colors.white,
+                          size: 40,
+                        ),
+                      );
+                    }
+
+                    final firstName = userData['first_name'] as String? ?? '';
+                    final lastName = userData['last_name'] as String? ?? '';
+                    final initials =
+                        (firstName.isNotEmpty ? firstName[0] : '') +
+                        (lastName.isNotEmpty ? lastName[0] : '');
+
+                    return CircleAvatar(
+                      radius: 50,
+                      backgroundColor: Colors.grey[700],
+                      child: Text(
+                        initials.toUpperCase(),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 26,
+                        ),
+                      ),
+                    );
+                  },
                 ),
                 const SizedBox(height: 16),
                 Text(
@@ -298,30 +402,96 @@ class _ProfilePageState extends State<ProfilePage> {
                   style: TextStyle(fontSize: 16, color: Colors.grey[400]),
                 ),
                 const SizedBox(height: 8),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(Icons.star, color: Color(0xFFCCFF00), size: 18),
-                    const SizedBox(width: 4),
-                    Text(
-                      userData['rating']?.toString() ?? '0.0',
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(width: 16),
-                    const Icon(
-                      Icons.calendar_today,
-                      color: Colors.grey,
-                      size: 16,
-                    ),
-                    const SizedBox(width: 4),
-                    Text(
-                      'Member since ${userData['memberSince']?.split('-')[0] ?? 'N/A'}',
-                      style: TextStyle(fontSize: 14, color: Colors.grey[400]),
-                    ),
-                  ],
+
+                // Rating display - Integrated from listing page with same style
+                FutureBuilder<DocumentSnapshot>(
+                  future:
+                      FirebaseFirestore.instance
+                          .collection('users')
+                          .doc(FirebaseAuth.instance.currentUser?.uid)
+                          .get(),
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData) {
+                      return const SizedBox(
+                        height: 20,
+                        width: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: Color(0xFFCCFF00),
+                        ),
+                      );
+                    }
+
+                    final userData =
+                        snapshot.data!.data() as Map<String, dynamic>?;
+                    if (userData == null) {
+                      return Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: const [
+                          Icon(Icons.star, color: Color(0xFFCCFF00), size: 18),
+                          SizedBox(width: 4),
+                          Text(
+                            '0.0',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      );
+                    }
+
+                    // Get the average_rating from user document
+                    final rating = userData['average_rating'] ?? 0.0;
+                    final totalRatings = userData['total_ratings'] ?? 0;
+
+                    // Format the rating to show one decimal place
+                    final formattedRating =
+                        rating is int
+                            ? rating.toDouble().toStringAsFixed(1)
+                            : (rating as double).toStringAsFixed(1);
+
+                    return Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(
+                          Icons.star,
+                          color: Color(0xFFCCFF00),
+                          size: 18,
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          formattedRating,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          '($totalRatings)',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.grey[400],
+                          ),
+                        ),
+                        const SizedBox(width: 16),
+                        const Icon(
+                          Icons.calendar_today,
+                          color: Colors.grey,
+                          size: 16,
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          'Member since ${userData['created_at'] != null ? DateFormat('yyyy').format(userData['created_at'].toDate()) : 'N/A'}',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.grey[400],
+                          ),
+                        ),
+                      ],
+                    );
+                  },
                 ),
               ],
             ),
@@ -338,10 +508,61 @@ class _ProfilePageState extends State<ProfilePage> {
                 Icons.directions_car,
               ),
               const SizedBox(width: 16),
-              _buildStatCard(
-                'Favorite Cars',
-                userData['favorites']?.toString() ?? '0',
-                Icons.favorite,
+              // Changed to Total Listed Cars with car listing icon
+              FutureBuilder<QuerySnapshot>(
+                future:
+                    FirebaseFirestore.instance
+                        .collection('cars')
+                        .where('ownerId', isEqualTo: userId)
+                        .get(),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return Expanded(
+                      child: Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: Color(0xFF201E25),
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Icon(
+                              Icons.car_rental,
+                              color: const Color(0xFFCCFF00),
+                              size: 24,
+                            ),
+                            const SizedBox(height: 8),
+                            const SizedBox(
+                              height: 24,
+                              width: 24,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: Color(0xFFCCFF00),
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              'Total Listed Cars',
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.grey[400],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  }
+
+                  final carCount = snapshot.data!.docs.length;
+
+                  return _buildStatCard(
+                    'Total Listed Cars',
+                    carCount.toString(),
+                    Icons.car_rental,
+                  );
+                },
               ),
             ],
           ),
