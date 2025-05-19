@@ -12,6 +12,7 @@ import 'listing_bloc.dart';
 import 'listing_event.dart';
 import 'listing_state.dart';
 import 'package:rental_app/pages/date_formatter.dart';
+import 'dart:ui';
 
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -81,7 +82,7 @@ class _ExplorePageState extends State<ExplorePage> {
                     child: Container(
                       padding: const EdgeInsets.all(8.0),
                       decoration: BoxDecoration(
-                        color: Colors.grey[800],
+                        color: Color(0xFF201E25),
                         borderRadius: BorderRadius.circular(8.0),
                       ),
                       child: const Icon(Icons.menu, size: 20),
@@ -160,7 +161,20 @@ class _ExplorePageState extends State<ExplorePage> {
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(32),
-                        color: const Color(0xFF2E2E2E),
+                        color: const Color(0xFF201E25),
+                        boxShadow: [
+                          BoxShadow(
+                            color: const Color.fromARGB(
+                              255,
+                              3,
+                              3,
+                              3,
+                            ).withOpacity(0.2), // Shadow color
+                            spreadRadius: 0.5,
+                            blurRadius: 12,
+                            offset: Offset(0, 4), // changes position of shadow
+                          ),
+                        ],
                       ),
                       child: DropdownButtonHideUnderline(
                         child: DropdownButton<String>(
@@ -260,7 +274,23 @@ class _ExplorePageState extends State<ExplorePage> {
                           padding: const EdgeInsets.symmetric(horizontal: 16),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(32),
-                            color: Color(0xFF2E2E2E),
+                            color: Color(0xFF201E25),
+                            boxShadow: [
+                              BoxShadow(
+                                color: const Color.fromARGB(
+                                  255,
+                                  3,
+                                  3,
+                                  3,
+                                ).withOpacity(0.2), // Shadow color
+                                spreadRadius: 0.5,
+                                blurRadius: 12,
+                                offset: Offset(
+                                  0,
+                                  4,
+                                ), // changes position of shadow
+                              ),
+                            ],
                           ),
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.center,
@@ -444,71 +474,83 @@ class _ExplorePageState extends State<ExplorePage> {
             ),
 
             // Bottom Navigation
-            Container(
-              padding: const EdgeInsets.symmetric(vertical: 8),
-              decoration: BoxDecoration(
-                border: Border(
-                  top: BorderSide(color: Colors.grey[900]!, width: 1),
+            ClipRect(
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 25, sigmaY: 25),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  decoration: BoxDecoration(
+                    color: Colors.black.withOpacity(
+                      0.3,
+                    ), // Semi-transparent for frosted effect
+                    
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      GestureDetector(
+                        onTap: () => _handleNavigation(0),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.home,
+                              color: Theme.of(context).primaryColor,
+                              size: 24,
+                            ),
+                            Text(
+                              'home',
+                              style: TextStyle(
+                                color: Theme.of(context).primaryColor,
+                                fontSize: 12,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () => _handleNavigation(1),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: const [
+                            Icon(
+                              Icons.compare_arrows,
+                              color: Colors.grey,
+                              size: 24,
+                            ),
+                            Text(
+                              'List Car',
+                              style: TextStyle(
+                                color: Colors.grey,
+                                fontSize: 12,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () => _handleNavigation(2),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: const [
+                            Icon(
+                              Icons.account_circle_outlined,
+                              color: Colors.grey,
+                              size: 24,
+                            ),
+                            Text(
+                              'account',
+                              style: TextStyle(
+                                color: Colors.grey,
+                                fontSize: 12,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  GestureDetector(
-                    onTap: () => _handleNavigation(0),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          Icons.home,
-                          color: Theme.of(context).primaryColor,
-                          size: 24,
-                        ),
-                        Text(
-                          'home',
-                          style: TextStyle(
-                            color: Theme.of(context).primaryColor,
-                            fontSize: 12,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () => _handleNavigation(1),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: const [
-                        Icon(
-                          Icons.compare_arrows,
-                          color: Colors.grey,
-                          size: 24,
-                        ),
-                        Text(
-                          'List Car',
-                          style: TextStyle(color: Colors.grey, fontSize: 12),
-                        ),
-                      ],
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () => _handleNavigation(2),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: const [
-                        Icon(
-                          Icons.account_circle_outlined,
-                          color: Colors.grey,
-                          size: 24,
-                        ),
-                        Text(
-                          'account',
-                          style: TextStyle(color: Colors.grey, fontSize: 12),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
               ),
             ),
           ],
@@ -556,8 +598,21 @@ class CarCard extends StatelessWidget {
       child: Container(
         margin: const EdgeInsets.only(bottom: 20),
         decoration: BoxDecoration(
-          color: Colors.grey[900],
+          color: Color(0xFF201E25),
           borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: const Color.fromARGB(
+                255,
+                0,
+                0,
+                0,
+              ).withOpacity(0.2), // Shadow color
+              spreadRadius: 0.7,
+              blurRadius: 14,
+              offset: Offset(0, 4), // changes position of shadow
+            ),
+          ],
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
+import 'dart:ui';
 import 'navigation_helper.dart';
 import 'sidebar.dart';
 
@@ -437,120 +437,114 @@ class _PastRentalsScreenState extends State<PastRentalsScreen> {
                   ),
                 ),
 
-                // Main content
-                Expanded(
-                  child:
-                      _isLoading
-                          ? Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                TweenAnimationBuilder(
-                                  tween: Tween<double>(begin: 0, end: 1),
-                                  duration: const Duration(seconds: 1),
-                                  curve: Curves.linear,
-                                  builder: (context, value, child) {
-                                    return Transform.rotate(
-                                      angle: value * 6.28, // 2 * pi
-                                      child: child,
-                                    );
-                                  },
-                                  child: Image.asset(
-                                    'assets/images/wheel.jpg',
-                                    width: 80,
-                                    height: 80,
-                                  ),
-                                ),
-                                const SizedBox(height: 16),
-                                const Text(
-                                  'Fetching your Past Rentals',
-                                  style: TextStyle(
-                                    fontFamily: 'BeVietnamPro',
-                                    color: Colors.white,
-                                    fontSize: 16,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          )
-                          : _errorMessage != null
-                          ? Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                const Icon(
-                                  Icons.error_outline,
-                                  color: Colors.red,
-                                  size: 48,
-                                ),
-                                const SizedBox(height: 16),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 24.0,
-                                  ),
-                                  child: Text(
-                                    _errorMessage!,
-                                    style: const TextStyle(color: Colors.red),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ),
-                                const SizedBox(height: 16),
-                                ElevatedButton(
-                                  onPressed: _fetchPastRentals,
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: const Color(0xFFCCFF00),
-                                    foregroundColor: Colors.black,
-                                  ),
-                                  child: const Text('Try Again'),
-                                ),
-                              ],
-                            ),
-                          )
-                          : _pastRentals.isEmpty
-                          ? Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                const Icon(
-                                  Icons.car_rental,
-                                  color: Colors.grey,
-                                  size: 48,
-                                ),
-                                const SizedBox(height: 16),
-                                const Text(
-                                  'No past rentals found',
-                                  style: TextStyle(color: Colors.grey),
-                                ),
-                                const SizedBox(height: 16),
-                                ElevatedButton(
-                                  onPressed: () {
-                                    // Navigate to home to book a car
-                                    _handleNavigation(0);
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: const Color(0xFFCCFF00),
-                                    foregroundColor: Colors.black,
-                                  ),
-                                  child: const Text('Book a Car'),
-                                ),
-                              ],
-                            ),
-                          )
-                          : RefreshIndicator(
-                            onRefresh: _fetchPastRentals,
-                            color: const Color(0xFFCCFF00),
-                            child: ListView.builder(
-                              padding: const EdgeInsets.all(16.0),
-                              itemCount: _pastRentals.length,
-                              itemBuilder: (context, index) {
-                                final rental = _pastRentals[index];
-                                final dateFormat = DateFormat('dd MMM');
-                                final startDate = dateFormat.format(
-                                  rental['startDate'],
+            // Main content
+            Expanded(
+              child:
+                  _isLoading
+                      ? Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            TweenAnimationBuilder(
+                              tween: Tween<double>(begin: 0, end: 1),
+                              duration: const Duration(seconds: 1),
+                              curve: Curves.linear,
+                              builder: (context, value, child) {
+                                return Transform.rotate(
+                                  angle: value * 6.28, // 2 * pi
+                                  child: child,
                                 );
-                                final endDate = dateFormat.format(
-                                  rental['endDate'],
-                                );
+                              },
+                              child: Image.asset(
+                                'assets/images/wheel.png',
+                                width: 80,
+                                height: 80,
+                                opacity: AlwaysStoppedAnimation(0.5),
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+                            
+                          ],
+                        ),
+                      )
+                      : _errorMessage != null
+                      ? Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(
+                              Icons.error_outline,
+                              color: Colors.red,
+                              size: 48,
+                            ),
+                            const SizedBox(height: 16),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 24.0,
+                              ),
+                              child: Text(
+                                _errorMessage!,
+                                style: const TextStyle(color: Colors.red),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+                            ElevatedButton(
+                              onPressed: _fetchPastRentals,
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color(0xFFCCFF00),
+                                foregroundColor: Colors.black,
+                              ),
+                              child: const Text('Try Again'),
+                            ),
+                          ],
+                        ),
+                      )
+                      : _pastRentals.isEmpty
+                      ? Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(
+                              Icons.car_rental,
+                              color: Colors.grey,
+                              size: 48,
+                            ),
+                            const SizedBox(height: 16),
+                            const Text(
+                              'No past rentals found',
+                              style: TextStyle(color: Colors.grey),
+                            ),
+                            const SizedBox(height: 16),
+                            ElevatedButton(
+                              onPressed: () {
+                                // Navigate to home to book a car
+                                _handleNavigation(0);
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color(0xFFCCFF00),
+                                foregroundColor: Colors.black,
+                              ),
+                              child: const Text('Book a Car'),
+                            ),
+                          ],
+                        ),
+                      )
+                      : RefreshIndicator(
+                        onRefresh: _fetchPastRentals,
+                        color: const Color(0xFFCCFF00),
+                        child: ListView.builder(
+                          padding: const EdgeInsets.all(16.0),
+                          itemCount: _pastRentals.length,
+                          itemBuilder: (context, index) {
+                            final rental = _pastRentals[index];
+                            final dateFormat = DateFormat('dd MMM');
+                            final startDate = dateFormat.format(
+                              rental['startDate'],
+                            );
+                            final endDate = dateFormat.format(
+                              rental['endDate'],
+                            );
 
                                 return Container(
                                   margin: const EdgeInsets.only(bottom: 16.0),
@@ -822,11 +816,16 @@ class _PastRentalsScreenState extends State<PastRentalsScreen> {
                           ),
                 ),
 
-                // Bottom Navigation
-                Container(
+            // Bottom Navigation
+            ClipRect(
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                child: Container(
                   padding: const EdgeInsets.symmetric(vertical: 8),
                   decoration: BoxDecoration(
-                    color: Colors.black,
+                    color: Colors.black.withOpacity(
+                      0.3,
+                    ), // semi-transparent background
                     border: Border(
                       top: BorderSide(color: Colors.grey[900]!, width: 1),
                     ),
@@ -874,7 +873,7 @@ class _PastRentalsScreenState extends State<PastRentalsScreen> {
                         onTap: () => _handleNavigation(2),
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
-                          children: [
+                          children: const [
                             Icon(
                               Icons.account_circle_outlined,
                               color: Color(0xFFCCFF00),
@@ -893,38 +892,12 @@ class _PastRentalsScreenState extends State<PastRentalsScreen> {
                     ],
                   ),
                 ),
-              ],
-            ),
-          ),
-        ),
-
-        // Loading overlay for rating updates
-        if (_isRatingLoading)
-          Container(
-            color: Colors.black.withOpacity(0.7),
-            child: Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(
-                      Color(0xFFCCFF00),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  const Text(
-                    'Updating rating...',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
               ),
             ),
-          ),
-      ],
-    );
+          ],
+        ),
+         ),
+        
+    ];
   }
 }

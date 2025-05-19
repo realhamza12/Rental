@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
+import 'dart:ui';
 import 'car_listing_success_screen.dart';
 import 'navigation_helper.dart';
 import 'list_car_bloc.dart';
@@ -861,7 +862,7 @@ class _ListCarScreenState extends State<ListCarScreen> {
                                                 onPressed: _pickImages,
                                                 style: ElevatedButton.styleFrom(
                                                   backgroundColor: const Color(
-                                                    0xFF2E2E2E,
+                                                    0xFF201E25,
                                                   ),
                                                   foregroundColor: Colors.white,
                                                   shape: RoundedRectangleBorder(
@@ -972,85 +973,97 @@ class _ListCarScreenState extends State<ListCarScreen> {
                   ),
 
                   // Bottom Navigation
-                  Container(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    decoration: BoxDecoration(
-                      border: Border(
-                        top: BorderSide(color: Colors.grey[900]!, width: 1),
+                  ClipRect(
+                    child: BackdropFilter(
+                      filter: ImageFilter.blur(sigmaX: 25, sigmaY: 25),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        decoration: BoxDecoration(
+                          color: Colors.black.withOpacity(
+                            0.3,
+                          ), // semi-transparent for frosted glass effect
+                          border: Border(
+                            top: BorderSide(color: Colors.grey[900]!, width: 1),
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            GestureDetector(
+                              onTap:
+                                  () => NavigationHelper.handleBottomNavigation(
+                                    context,
+                                    0,
+                                  ),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: const [
+                                  Icon(
+                                    Icons.home,
+                                    color: Colors.grey,
+                                    size: 24,
+                                  ),
+                                  Text(
+                                    'home',
+                                    style: TextStyle(
+                                      color: Colors.grey,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap:
+                                  () => NavigationHelper.handleBottomNavigation(
+                                    context,
+                                    1,
+                                  ),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    Icons.compare_arrows,
+                                    color: Theme.of(context).primaryColor,
+                                    size: 24,
+                                  ),
+                                  Text(
+                                    'List Car',
+                                    style: TextStyle(
+                                      color: Theme.of(context).primaryColor,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap:
+                                  () => NavigationHelper.handleBottomNavigation(
+                                    context,
+                                    2,
+                                  ),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: const [
+                                  Icon(
+                                    Icons.account_circle_outlined,
+                                    color: Colors.grey,
+                                    size: 24,
+                                  ),
+                                  Text(
+                                    'account',
+                                    style: TextStyle(
+                                      color: Colors.grey,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        GestureDetector(
-                          onTap:
-                              () => NavigationHelper.handleBottomNavigation(
-                                context,
-                                0,
-                              ),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: const [
-                              Icon(Icons.home, color: Colors.grey, size: 24),
-                              Text(
-                                'home',
-                                style: TextStyle(
-                                  color: Colors.grey,
-                                  fontSize: 12,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap:
-                              () => NavigationHelper.handleBottomNavigation(
-                                context,
-                                1,
-                              ),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(
-                                Icons.compare_arrows,
-                                color: Theme.of(context).primaryColor,
-                                size: 24,
-                              ),
-                              Text(
-                                'List Car',
-                                style: TextStyle(
-                                  color: Theme.of(context).primaryColor,
-                                  fontSize: 12,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap:
-                              () => NavigationHelper.handleBottomNavigation(
-                                context,
-                                2,
-                              ),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: const [
-                              Icon(
-                                Icons.account_circle_outlined,
-                                color: Colors.grey,
-                                size: 24,
-                              ),
-                              Text(
-                                'account',
-                                style: TextStyle(
-                                  color: Colors.grey,
-                                  fontSize: 12,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
                     ),
                   ),
                 ],
