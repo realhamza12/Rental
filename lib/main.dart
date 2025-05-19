@@ -46,7 +46,7 @@ class MyApp extends StatelessWidget {
           primary: Color(0xFFE7FE54),
         ),
       ),
-      home: ProfilePage(),
+      home: const ListingPage(),
       onGenerateRoute: (settings) {
         if (settings.name == '/bookingConfirmation') {
           final car = settings.arguments as Car;

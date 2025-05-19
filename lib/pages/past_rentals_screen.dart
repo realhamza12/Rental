@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
+import 'dart:ui';
 import 'navigation_helper.dart';
 import 'sidebar.dart';
 
@@ -319,20 +319,14 @@ class _PastRentalsScreenState extends State<PastRentalsScreen> {
                                 );
                               },
                               child: Image.asset(
-                                'assets/images/wheel.jpg',
+                                'assets/images/wheel.png',
                                 width: 80,
                                 height: 80,
+                                opacity: AlwaysStoppedAnimation(0.5),
                               ),
                             ),
                             const SizedBox(height: 16),
-                            const Text(
-                              'Fetching your Past Rentals',
-                              style: TextStyle(
-                                fontFamily: 'BeVietnamPro',
-                                color: Colors.white,
-                                fontSize: 16,
-                              ),
-                            ),
+                            
                           ],
                         ),
                       )
@@ -622,68 +616,81 @@ class _PastRentalsScreenState extends State<PastRentalsScreen> {
             ),
 
             // Bottom Navigation
-            Container(
-              padding: const EdgeInsets.symmetric(vertical: 8),
-              decoration: BoxDecoration(
-                color: Colors.black,
-                border: Border(
-                  top: BorderSide(color: Colors.grey[900]!, width: 1),
+            ClipRect(
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  decoration: BoxDecoration(
+                    color: Colors.black.withOpacity(
+                      0.3,
+                    ), // semi-transparent background
+                    border: Border(
+                      top: BorderSide(color: Colors.grey[900]!, width: 1),
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      GestureDetector(
+                        onTap: () => _handleNavigation(0),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: const [
+                            Icon(Icons.home, color: Colors.grey, size: 24),
+                            Text(
+                              'home',
+                              style: TextStyle(
+                                color: Colors.grey,
+                                fontSize: 12,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () => _handleNavigation(1),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: const [
+                            Icon(
+                              Icons.compare_arrows,
+                              color: Colors.grey,
+                              size: 24,
+                            ),
+                            Text(
+                              'List Car',
+                              style: TextStyle(
+                                color: Colors.grey,
+                                fontSize: 12,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () => _handleNavigation(2),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: const [
+                            Icon(
+                              Icons.account_circle_outlined,
+                              color: Color(0xFFCCFF00),
+                              size: 24,
+                            ),
+                            Text(
+                              'account',
+                              style: TextStyle(
+                                color: Color(0xFFCCFF00),
+                                fontSize: 12,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  GestureDetector(
-                    onTap: () => _handleNavigation(0),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: const [
-                        Icon(Icons.home, color: Colors.grey, size: 24),
-                        Text(
-                          'home',
-                          style: TextStyle(color: Colors.grey, fontSize: 12),
-                        ),
-                      ],
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () => _handleNavigation(1),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: const [
-                        Icon(
-                          Icons.compare_arrows,
-                          color: Colors.grey,
-                          size: 24,
-                        ),
-                        Text(
-                          'List Car',
-                          style: TextStyle(color: Colors.grey, fontSize: 12),
-                        ),
-                      ],
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () => _handleNavigation(2),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          Icons.account_circle_outlined,
-                          color: Color(0xFFCCFF00),
-                          size: 24,
-                        ),
-                        Text(
-                          'account',
-                          style: TextStyle(
-                            color: Color(0xFFCCFF00),
-                            fontSize: 12,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
               ),
             ),
           ],

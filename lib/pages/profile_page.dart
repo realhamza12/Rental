@@ -8,6 +8,7 @@ import 'profile_bloc.dart';
 import 'profile_event.dart';
 import 'profile_state.dart';
 import 'auth_service.dart';
+import 'dart:ui';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -68,7 +69,7 @@ class _ProfilePageState extends State<ProfilePage> {
         builder: (context, state) {
           return Scaffold(
             key: _scaffoldKey,
-            backgroundColor: const Color(0xFF181818),
+
             body: SafeArea(
               child: Column(
                 children: [
@@ -123,73 +124,88 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
 
                   // Bottom Navigation - same as listing page
-                  Container(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    decoration: BoxDecoration(
-                      border: Border(
-                        top: BorderSide(color: Colors.grey[900]!, width: 1),
+                  ClipRect(
+                    child: BackdropFilter(
+                      filter: ImageFilter.blur(
+                        sigmaX: 25,
+                        sigmaY: 25,
+                      ), // blur effect
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        decoration: BoxDecoration(
+                          color: Colors.black.withOpacity(
+                            0.3,
+                          ), // frosted glass effect
+                          border: Border(
+                            top: BorderSide(color: Colors.grey[900]!, width: 1),
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            GestureDetector(
+                              onTap: () => _handleNavigation(0, context),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: const [
+                                  Icon(
+                                    Icons.home,
+                                    color: Colors.grey,
+                                    size: 24,
+                                  ),
+                                  Text(
+                                    'home',
+                                    style: TextStyle(
+                                      color: Colors.grey,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () => _handleNavigation(1, context),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: const [
+                                  Icon(
+                                    Icons.compare_arrows,
+                                    color: Colors.grey,
+                                    size: 24,
+                                  ),
+                                  Text(
+                                    'List Car',
+                                    style: TextStyle(
+                                      color: Colors.grey,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () => _handleNavigation(2, context),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: const [
+                                  Icon(
+                                    Icons.account_circle_outlined,
+                                    color: Color(0xFFCCFF00), // lime-ish color
+                                    size: 24,
+                                  ),
+                                  Text(
+                                    'account',
+                                    style: TextStyle(
+                                      color: Color(0xFFCCFF00),
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        GestureDetector(
-                          onTap: () => _handleNavigation(0, context),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: const [
-                              Icon(Icons.home, color: Colors.grey, size: 24),
-                              Text(
-                                'home',
-                                style: TextStyle(
-                                  color: Colors.grey,
-                                  fontSize: 12,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: () => _handleNavigation(1, context),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: const [
-                              Icon(
-                                Icons.compare_arrows,
-                                color: Colors.grey,
-                                size: 24,
-                              ),
-                              Text(
-                                'List Car',
-                                style: TextStyle(
-                                  color: Colors.grey,
-                                  fontSize: 12,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: () => _handleNavigation(2, context),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(
-                                Icons.account_circle_outlined,
-                                color: Color(0xFFCCFF00),
-                                size: 24,
-                              ),
-                              Text(
-                                'account',
-                                style: TextStyle(
-                                  color: Color(0xFFCCFF00),
-                                  fontSize: 12,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
                     ),
                   ),
                 ],
@@ -336,7 +352,7 @@ class _ProfilePageState extends State<ProfilePage> {
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: Colors.grey[900],
+              color: Color(0xFF201E25),
               borderRadius: BorderRadius.circular(16),
             ),
             child: Column(
@@ -439,7 +455,7 @@ class _ProfilePageState extends State<ProfilePage> {
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: Colors.grey[900],
+              color: Color(0xFF201E25),
               borderRadius: BorderRadius.circular(16),
             ),
             child: Column(
@@ -501,7 +517,7 @@ class _ProfilePageState extends State<ProfilePage> {
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Colors.grey[900],
+          color: Color(0xFF201E25),
           borderRadius: BorderRadius.circular(16),
         ),
         child: Column(
