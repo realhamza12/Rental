@@ -671,7 +671,7 @@ class CarCard extends StatelessWidget {
                       ),
                       Column(
                         children: [
-                          SizedBox(height: 4.5,),
+                          SizedBox(height: 4.5),
                           Text(
                             '/day',
                             style: const TextStyle(
@@ -680,7 +680,7 @@ class CarCard extends StatelessWidget {
                             ),
                           ),
                         ],
-                      )
+                      ),
                     ],
                   ),
 
@@ -689,7 +689,6 @@ class CarCard extends StatelessWidget {
                   // Rating and Location
                   Row(
                     children: [
-                    
                       const Icon(
                         Icons.location_on,
                         color: Colors.grey,
@@ -733,18 +732,12 @@ class CarCard extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(width: 16),
-                      
-                     
-                        
                     ],
                   ),
-                  
 
                   const SizedBox(height: 8),
 
                   // Seater and Days
-                  
-
                   const SizedBox(height: 12),
 
                   // Owner Info with Rating

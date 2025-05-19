@@ -99,7 +99,12 @@ class _ListCarScreenState extends State<ListCarScreen> {
   ];
 
   // Transmission options
-  final List<String> _transmissionOptions = ['Automatic', 'Manual', 'Hybrid'];
+  final List<String> _transmissionOptions = [
+    'Automatic',
+    'Manual',
+    'Hybrid',
+    'Electric',
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -237,7 +242,6 @@ class _ListCarScreenState extends State<ListCarScreen> {
                                     ),
                                   ),
                                   const SizedBox(height: 16),
-                                  
                                 ],
                               ),
                             )
@@ -248,11 +252,11 @@ class _ListCarScreenState extends State<ListCarScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     const SizedBox(height: 10),
+
                                     // Title - Car image removed as requested
-                                    
-                                   
-                                    Row( 
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
                                         const Text(
                                           'It takes ',
@@ -368,7 +372,7 @@ class _ListCarScreenState extends State<ListCarScreen> {
                                                       color: Color(0xFFCCFF00),
                                                     ),
                                                   ),
-                                              prefixText: '\$ ',
+                                              prefixText: '\RS.  ',
                                               prefixStyle: TextStyle(
                                                 color: Colors.white,
                                               ),
@@ -971,7 +975,6 @@ class _ListCarScreenState extends State<ListCarScreen> {
                   Container(
                     padding: const EdgeInsets.symmetric(vertical: 8),
                     decoration: BoxDecoration(
-                      
                       border: Border(
                         top: BorderSide(color: Colors.grey[900]!, width: 1),
                       ),

@@ -546,7 +546,7 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
                                   Row(
                                     children: [
                                       Text(
-                                        '\$${car.price.toInt()}',
+                                        '\RS. ${car.price.toInt()}',
                                         style: const TextStyle(
                                           fontSize: 28,
                                           fontWeight: FontWeight.bold,
@@ -580,17 +580,6 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
                                     scrollDirection: Axis.horizontal,
                                     child: Row(
                                       children: [
-                                        const Icon(
-                                          Icons.star,
-                                          color: Color(0xFFCCFF00),
-                                          size: 20,
-                                        ),
-                                        const SizedBox(width: 4),
-                                        Text(
-                                          car.rating.toStringAsFixed(1),
-                                          style: const TextStyle(fontSize: 16),
-                                        ),
-                                        const SizedBox(width: 16),
                                         const Icon(
                                           Icons.location_on,
                                           color: Colors.grey,
@@ -633,18 +622,32 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
                                           ),
                                         ),
                                         const SizedBox(width: 4),
-                                        Text(
-                                          DateFormatter.formatDateRange(
-                                            car.availableFrom,
-                                            car.availableTo,
-                                          ),
-                                          style: const TextStyle(
-                                            fontSize: 14,
-                                            color: Colors.grey,
-                                          ),
-                                        ),
                                       ],
                                     ),
+                                  ),
+                                  const SizedBox(height: 16),
+                                  const SizedBox(width: 16),
+                                  Row(
+                                    children: [
+                                      const Icon(
+                                        Icons.calendar_today,
+                                        color: Colors.grey,
+                                        size: 20,
+                                      ),
+                                      const SizedBox(
+                                        width: 8,
+                                      ), // optional spacing between icon and text
+                                      Text(
+                                        DateFormatter.formatDateRange(
+                                          car.availableFrom,
+                                          car.availableTo,
+                                        ),
+                                        style: const TextStyle(
+                                          fontSize: 14,
+                                          color: Colors.grey,
+                                        ),
+                                      ),
+                                    ],
                                   ),
 
                                   const SizedBox(height: 16),
